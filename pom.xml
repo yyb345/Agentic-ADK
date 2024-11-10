@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.alibaba</groupId>
+	<artifactId>ali-langengine</artifactId>
+	<version>1.2.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>ali-langengine</name>
+	<description>LangEngine is an AI application development framework written in Java.</description>
+	<url>https://github.com/AIDC-AI/ali-langengine</url>
+
+	<scm>
+		<url>https://github.com/AIDC-AI/ali-langengine</url>
+		<connection>scm:git:https://git@github.com/AIDC-AI/ali-langengine.git</connection>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>http://mvnrepo.alibaba-inc.com/mvn/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://mvnrepo.alibaba-inc.com/mvn/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+<!--	<distributionManagement>-->
+<!--		<repository>-->
+<!--			<id>ossrh</id>-->
+<!--			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+<!--		</repository>-->
+<!--		<snapshotRepository>-->
+<!--			<id>ossrh</id>-->
+<!--			<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--		</snapshotRepository>-->
+<!--	</distributionManagement>-->
+
+	<properties>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<jacoco-plugin.version>0.8.8</jacoco-plugin.version>
+		<maven-antrun.version>1.8</maven-antrun.version>
+		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+		<spring-boot.version>2.5.12</spring-boot.version>
+		<springframework.version>5.3.31</springframework.version>
+		<junit5.version>5.11.0</junit5.version>
+		<!-- overridden by submodule that need skip deploy -->
+		<maven.deploy.skip>false</maven.deploy.skip>
+		<root.basedir>${project.basedir}</root.basedir>
+	</properties>
+
+	<modules>
+		<module>ali-langengine-core</module>
+		<module>ali-langengine-demo</module>
+		<module>ali-langengine-infrastructure/ali-langengine-docloader</module>
+		<module>ali-langengine-infrastructure/ali-langengine-tool</module>
+		<module>ali-langengine-infrastructure/ali-langengine-gpt</module>
+		<module>ali-langengine-community/ali-langengine-openai</module>
+		<module>ali-langengine-community/ali-langengine-azure</module>
+		<module>ali-langengine-community/ali-langengine-dashscope</module>
+		<module>ali-langengine-community/ali-langengine-gemini</module>
+		<module>ali-langengine-community/ali-langengine-vertexai</module>
+		<module>ali-langengine-community/ali-langengine-moonshot</module>
+		<module>ali-langengine-community/ali-langengine-minimax</module>
+		<module>ali-langengine-community/ali-langengine-duckdb</module>
+		<module>ali-langengine-community/ali-langengine-redis</module>
+		<module>ali-langengine-community/ali-langengine-hologres</module>
+		<module>ali-langengine-community/ali-langengine-adbpg</module>
+		<module>ali-langengine-community/ali-langengine-opensearch</module>
+		<module>ali-langengine-community/ali-langengine-polardb</module>
+		<module>ali-langengine-community/ali-langengine-tair</module>
+		<module>ali-langengine-community/ali-langengine-pinecone</module>
+		<module>ali-langengine-community/ali-langengine-milvus</module>
+		<module>ali-langengine-community/ali-langengine-chroma</module>
+		<module>ali-langengine-community/ali-langengine-djl</module>
+		<module>ali-langengine-community/ali-langengine-huggingface</module>
+		<module>ali-langengine-community/ali-langengine-sqlite</module>
+		<module>ali-langengine-community/ali-langengine-xingchen</module>
+		<module>ali-langengine-community/ali-langengine-xinghuo</module>
+		<module>ali-langengine-community/ali-langengine-msearch</module>
+		<module>ali-langengine-community/ali-langengine-autogen</module>
+		<module>ali-langengine-community/ali-langengine-metagpt</module>
+		<module>ali-langengine-community/ali-langengine-claude</module>
+	</modules>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.17.0</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.9.3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<type>pom</type>
+				<version>${junit5.version}</version>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.10.19</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.spockframework</groupId>
+				<artifactId>spock-core</artifactId>
+				<version>2.4-M4-groovy-4.0</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.34</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.83</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.10</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.5.13</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpmime</artifactId>
+				<version>4.4</version>
+			</dependency>
+
+			<!-- unit test start -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>3.3.3</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+				<version>2.0.9</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-api-mockito2</artifactId>
+				<version>2.0.9</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- unit test end -->
+
+			<!-- retrofit start -->
+			<!-- core used -->
+			<dependency>
+				<groupId>com.squareup.retrofit2</groupId>
+				<artifactId>retrofit</artifactId>
+				<version>2.9.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.squareup.retrofit2</groupId>
+				<artifactId>adapter-rxjava2</artifactId>
+				<version>2.9.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.squareup.retrofit2</groupId>
+				<artifactId>converter-jackson</artifactId>
+				<version>2.9.0</version>
+			</dependency>
+			<!-- retrofit end -->
+
+			<!-- okhttp3 start -->
+			<!-- core used -->
+			<dependency>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>okhttp</artifactId>
+				<version>4.11.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>okhttp-sse</artifactId>
+				<version>4.11.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>logging-interceptor</artifactId>
+				<version>4.11.0</version>
+			</dependency>
+			<!-- okhttp3 end -->
+
+			<!-- guava localcache start -->
+			<!-- core userd -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>23.0</version>
+			</dependency>
+			<!-- guava localcache end -->
+
+			<!-- websocket start -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-websocket</artifactId>
+				<version>2.5.12</version>
+			</dependency>
+			<!-- websocket end -->
+
+			<!-- chatopenai stream防止冲突问题解决 start -->
+			<!-- core used -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>2.10.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>2.10.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.10.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jsonSchema</artifactId>
+				<version>2.10.1</version>
+			</dependency>
+			<!-- chatopenai stream防止冲突问题解决 end -->
+
+			<!-- Request Chain需要 -->
+			<!-- core used -->
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>1.16.1</version>
+			</dependency>
+			<!-- Request Chain需要 -->
+
+			<!-- log4j排除 start -->
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>99.0-does-not-exist</version>
+			</dependency>
+			<!-- log4j排除 end -->
+
+			<dependency>
+				<groupId>com.aliyun.odps</groupId>
+				<artifactId>odps-sdk-core</artifactId>
+				<version>0.46.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>5.11.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>5.11.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>5.11.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-commons</artifactId>
+				<version>1.11.3</version>
+				<scope>test</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<version>3.3.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.spockframework</groupId>
+			<artifactId>spock-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>${maven-antrun.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven-surefire-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<header>${project.basedir}/license-header.txt</header>
+						<includes>
+							<include>**/*.java</include>
+						</includes>
+					</configuration>
+					<executions>
+						<execution>
+							<id>format-license</id>
+							<goals>
+								<goal>format</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>check-license</id>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>
