@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://github.com/spring-projects/spring-boot/blob/v2.5.12/spring-boot-project/spring-boot/src/main/resources/org/springframework/boot/logging/logback/defaults.xml -->
+<included>
+  <!--  日志配置   -->
+  <appender name="TRACE_LLM_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${user.home}/${APP_NAME}/logs/llm_trace.log</file>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    <encoder>
+      <pattern>%m%n</pattern>
+      <charset>utf-8</charset>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!-- roll over daily -->
+      <fileNamePattern>${user.home}/${APP_NAME}/logs/llm_trace.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+      <!-- each file should be at most 50MB, keep 7 days worth of history, but at most 1GB -->
+      <maxFileSize>50MB</maxFileSize>
+      <maxHistory>7</maxHistory>
+      <totalSizeCap>1GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="ASYNC_TRACE_LLM_LOG" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="TRACE_LLM_LOG"/>
+    <queueSize>512</queueSize>
+    <!--当队列的剩余容量小于这个阈值并且当前日志level TRACE, DEBUG or INFO，则丢弃这些日志。默认为0，不丢失日志。-->
+    <discardingThreshold>50</discardingThreshold>
+    <!--neverBlock=true则写日志队列时候会调用阻塞队列的offer方法而不是put，如果队列满则直接返回，而不是阻塞，即日志被丢弃。-->
+    <neverBlock>true</neverBlock>
+    <!-- You can optionally configure other parameters here, like queue size, discardingThreshold, etc. -->
+  </appender>
+
+
+  <logger name="llm_trace_log" additivity="false">
+    <level>INFO</level>
+    <appender-ref ref="ASYNC_TRACE_LLM_LOG"/>
+  </logger>
+</included>
