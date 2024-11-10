@@ -41,6 +41,7 @@ hsf.configuration/
 .idea
 metagpt_workspace/
 iopgw*/bin/
+license-header.txt
 
 # 忽略*.o和*.a文件
 #*.[oa]
