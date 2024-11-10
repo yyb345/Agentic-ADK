@@ -14,7 +14,7 @@ ali-langengine-core：最核心的AI应用框架引擎模块。
 
 ali-langengine-infrastructure：AI应用框架基础设施模块。
 
-ali-langengine-community：社区生态共建模块。
+ali-langengine-community：开源社区生态共建模块。
 
 ali-langengine-demo：相关示例模块。
 
