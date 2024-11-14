@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.alibaba.langengine.core.chain.combinedocument.PromptConstants.QA_PROMPT_CH;
+import static com.alibaba.langengine.core.chain.combinedocument.PromptConstants.QA_PROMPT_EN;
 import static com.alibaba.langengine.core.chain.document.Constants.OPEN_INFO_CONTENT;
 import static com.alibaba.langengine.core.chain.document.Constants.OPEN_WORD_CONTENT;
 
@@ -53,8 +53,7 @@ public class MapReduceDocumentChainTest {
 
         PromptTemplate prompt = new PromptTemplate();
         prompt.setInputVariables(Arrays.asList(new String[]{ "context" }));
-//        prompt.setTemplate("Summarize this content: {context}");
-        prompt.setTemplate("总结一下本次内容: {context}");
+        prompt.setTemplate("Summarize this content: {context}");
 
         LLMChain llmChain = new LLMChain();
         llmChain.setLlm(llm);
@@ -62,8 +61,7 @@ public class MapReduceDocumentChainTest {
 
         PromptTemplate reducePrompt = new PromptTemplate();
         reducePrompt.setInputVariables(Arrays.asList(new String[]{ "context" }));
-//        reducePrompt.setTemplate("Combine these summaries: {context}");
-        reducePrompt.setTemplate("合并这些总结: {context}");
+        reducePrompt.setTemplate("Combine these summaries: {context}");
 
         LLMChain reduceLlmChain = new LLMChain();
         reduceLlmChain.setLlm(llm);
@@ -77,7 +75,7 @@ public class MapReduceDocumentChainTest {
         ReduceDocumentChain reduceDocumentChain = new ReduceDocumentChain();
         reduceDocumentChain.setCombineDocumentChain(combineDocumentChain);
 
-        PromptTemplate qaPrompt = QA_PROMPT_CH;
+        PromptTemplate qaPrompt = QA_PROMPT_EN;
 
         LLMChain qaLlmChain = new LLMChain();
         qaLlmChain.setLlm(llm);

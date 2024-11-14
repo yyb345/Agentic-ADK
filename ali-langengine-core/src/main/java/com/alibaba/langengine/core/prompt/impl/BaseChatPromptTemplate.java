@@ -23,12 +23,15 @@ import com.alibaba.langengine.core.prompt.BasePromptTemplate;
 import com.alibaba.langengine.core.prompt.ChatPromptValue;
 import com.alibaba.langengine.core.prompt.PromptValue;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Data
 public abstract class BaseChatPromptTemplate extends BasePromptTemplate {
 
@@ -106,6 +109,9 @@ public abstract class BaseChatPromptTemplate extends BasePromptTemplate {
         //	"name": "add",
         //	"role": "function"
         //}]
+
+        log.info("agentAction eq {}", agentAction);
+
         AIMessage aiMessage = new AIMessage();
         Map<String, Object> functionCall = new HashMap<>();
         functionCall.put("name", agentAction.getTool());
@@ -113,7 +119,11 @@ public abstract class BaseChatPromptTemplate extends BasePromptTemplate {
         Map<String, Object> additional = new HashMap<>();
         additional.put("function_call", functionCall);
         aiMessage.setAdditionalKwargs(additional);
-        aiMessage.setContent(null);
+        if(!StringUtils.isEmpty(agentAction.getLog())) {
+            aiMessage.setContent(agentAction.getLog());
+        } else {
+            aiMessage.setContent(null);
+        }
         intermediateStep.add(aiMessage);
 
         FunctionMessage functionMessage = new FunctionMessage();

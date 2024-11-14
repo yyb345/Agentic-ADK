@@ -117,7 +117,7 @@ public class MessageConverter {
                 }
             }
             if (message.getAdditionalKwargs() != null && message.getAdditionalKwargs().containsKey("tool_calls")) {
-                chatMessage.setToolCalls((List<Object>) (message.getAdditionalKwargs().get("tool_calls")));
+                chatMessage.setToolCalls((List<Map<String, Object>>) (message.getAdditionalKwargs().get("tool_calls")));
                 if ("".equals(message.getContent())) {
                     chatMessage.setContent(null);
                 }

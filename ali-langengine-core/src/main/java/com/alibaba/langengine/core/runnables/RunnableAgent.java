@@ -15,10 +15,12 @@
  */
 package com.alibaba.langengine.core.runnables;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.langengine.core.agent.AgentAction;
 import com.alibaba.langengine.core.agent.AgentNextStep;
 import com.alibaba.langengine.core.messages.BaseMessage;
 import com.alibaba.langengine.core.outputparser.BaseOutputParser;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -28,6 +30,7 @@ import java.util.function.Consumer;
  *
  * @author xiaoxuan.lp
  */
+@Slf4j
 public class RunnableAgent extends Runnable<RunnableInput, AgentNextStep> {
 
     private RunnableSequence runnableSequence;
@@ -62,11 +65,14 @@ public class RunnableAgent extends Runnable<RunnableInput, AgentNextStep> {
         if(runnableOutput instanceof BaseMessage) {
             BaseMessage baseMessage = (BaseMessage) runnableOutput;
             if (baseMessage.getAdditionalKwargs() != null) {
+                // TODO 可能需要增加tool_call
                 Map<String, Object> functionCall = (Map<String, Object>) baseMessage.getAdditionalKwargs().get("function_call");
                 if (functionCall != null && functionCall.get("name") != null) {
+                    log.info("RunnableAgent message:{}", JSON.toJSONString(baseMessage));
                     AgentAction agentAction = new AgentAction();
                     agentAction.setTool((String) functionCall.get("name"));
                     agentAction.setToolInput((String) functionCall.get("arguments"));
+                    agentAction.setLog(baseMessage.getContent());
                     return agentAction;
                 }
             }

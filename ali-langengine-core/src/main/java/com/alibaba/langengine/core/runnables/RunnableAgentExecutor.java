@@ -187,11 +187,11 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
 
     private AgentFinish returnStoppedResponse() {
 //        if (FORCE_STOPPING_METHOD.equals(earlyStoppingMethod)) {
-            Map<String, Object> returnValues = new HashMap<>();
-            returnValues.put("output", !StringUtils.isEmpty(forceStoppingContent) ? forceStoppingContent : DEFAULT_FORCE_STOPPING_CONTENT);
-            AgentFinish agentFinish = new AgentFinish();
-            agentFinish.setReturnValues(returnValues);
-            return agentFinish;
+        Map<String, Object> returnValues = new HashMap<>();
+        returnValues.put("output", !StringUtils.isEmpty(forceStoppingContent) ? forceStoppingContent : DEFAULT_FORCE_STOPPING_CONTENT);
+        AgentFinish agentFinish = new AgentFinish();
+        agentFinish.setReturnValues(returnValues);
+        return agentFinish;
 //        } else {
 //            throw new RuntimeException("Got unsupported early_stopping_method `" + earlyStoppingMethod + "`");
 //        }
@@ -244,6 +244,7 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
         }
 
         AgentAction agentAction = (AgentAction) agentNextStep;
+        log.info("RunnableAgentExecutor takeNextStep eq {}", JSON.toJSONString(agentAction));
         String toolName = containToolName(agentAction.getTool());
         if(StringUtils.isEmpty(toolName)) {
             AgentFinish agentFinish = returnStoppedResponse();
@@ -274,6 +275,10 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
     }
 
     protected String containToolName(String toolName) {
+        if(nameToToolMap.get(toolName) != null) {
+            return toolName;
+        }
+
         for (Map.Entry<String, BaseTool> entry : nameToToolMap.entrySet()) {
             String key = entry.getKey();
             if(toolName.indexOf(key) >= 0 || key.indexOf(toolName) >= 0) {

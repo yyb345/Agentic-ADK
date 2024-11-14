@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * RunnableLambda
+ * RunnableAgentLambda
  *
  * @author xiaoxuan.lp
  */

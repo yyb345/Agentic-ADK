@@ -60,7 +60,7 @@ public class ChatMessage {
     String name;
 
     @JsonProperty("tool_calls")
-    List<Object> toolCalls;
+    List<Map<String, Object>> toolCalls;
 
     /**
      * 工具Id
@@ -106,6 +106,14 @@ public class ChatMessage {
 
     public void setFunctionCall(Map<String, Object> functionCall) {
         this.functionCall = functionCall;
+    }
+
+    public List<Map<String, Object>> getToolCalls() {
+        return toolCalls;
+    }
+
+    public void setToolCalls(List<Map<String, Object>> toolCalls) {
+        this.toolCalls = toolCalls;
     }
 
     public String getName() {
