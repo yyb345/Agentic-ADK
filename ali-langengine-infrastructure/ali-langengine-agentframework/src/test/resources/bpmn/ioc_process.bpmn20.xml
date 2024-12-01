@@ -2,7 +2,7 @@
     <process id="ioc_process" isExecutable="true" version="1">
         <startEvent id="start" name="开始"/>
         <serviceTask id="llm_calling_task1" name="LLM调用1-分析是否走检索服务"
-                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkLlmCallingDelegation">
+                     smart:class="com.alibaba.langengine.agentframework.delegation.FrameworkLlmCallingDelegation">
             <extensionElements>
                 <smart:properties>
                     <smart:value name="query" value="$!{system.query}" />
@@ -12,7 +12,7 @@
             </extensionElements>
         </serviceTask>
         <serviceTask id="llm_calling_task3" name="LLM调用3-走NL2SQL服务"
-                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkLlmCallingDelegation">
+                     smart:class="com.alibaba.langengine.agentframework.delegation.FrameworkLlmCallingDelegation">
             <extensionElements>
                 <smart:properties>
                     <smart:value name="query" value="$!{system.query}" />
@@ -22,7 +22,7 @@
             </extensionElements>
         </serviceTask>
         <serviceTask id="knowledge_retrieval_task" name="知识库检索"
-                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkKnowledgeRetrievalDelegation">
+                     smart:class="com.alibaba.langengine.agentframework.delegation.FrameworkKnowledgeRetrievalDelegation">
             <extensionElements>
                 <smart:properties>
                     <smart:value name="query" value="$!{system.query}" />
@@ -36,7 +36,7 @@
         </serviceTask>
         <serviceTask id="llm_calling_task2" name="LLM调用2-不走检索直接LLM调用"/>
         <serviceTask id="sql_query_task" name="SQL查询"
-                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkScriptEvaluateDelegation">
+                     smart:class="com.alibaba.langengine.agentframework.delegation.FrameworkScriptEvaluateDelegation">
             <extensionElements>
                 <smart:properties>
                     <smart:value name="scriptService" value="com.alibaba.agentmagic.framework.serviceTest.SQLQueryService" />
@@ -45,7 +45,7 @@
             </extensionElements>
         </serviceTask>
         <serviceTask id="llm_calling_task4" name="LLM调用4-多路召回合并"
-                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkLlmCallingDelegation">
+                     smart:class="com.alibaba.langengine.agentframework.delegation.FrameworkLlmCallingDelegation">
             <extensionElements>
                 <smart:properties>
                     <smart:value name="query" value="$!{system.query}" />

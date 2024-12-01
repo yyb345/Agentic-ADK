@@ -46,7 +46,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.alibaba.agentmagic.framework.domain.ProcessExecuteLog" level="WARN" additivity="false">
+    <logger name="com.alibaba.langengine.agentframework.domain.ProcessExecuteLog" level="WARN" additivity="false">
         <appender-ref ref="ASYNC_PROCESS_EXECUTE" />
     </logger>
 
