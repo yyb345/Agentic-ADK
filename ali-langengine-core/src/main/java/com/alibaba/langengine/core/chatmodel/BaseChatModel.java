@@ -172,6 +172,7 @@ public abstract class BaseChatModel<T extends ChatCompletionRequest> extends Bas
      * @return
      */
     public BaseMessage run(List<BaseMessage> messages, List<FunctionDefinition> functions, List<String> stops, Consumer<BaseMessage> consumer, Map<String, Object> extraAttributes) {
+
         log.info("model is {}", getLlmModelName());
         log.info("messages is {}", JSON.toJSONString(messages));
         List<ChatMessage> chatMessages = MessageConverter.convertMessageToChatMessage(messages);
@@ -189,7 +190,7 @@ public abstract class BaseChatModel<T extends ChatCompletionRequest> extends Bas
         request.setStop(!CollectionUtils.isEmpty(request.getStop()) ? request.getStop() : stops);
         request.setStream(currentStream(consumer));
 
-        log.info("request is {}", JSON.toJSONString(request));
+        log.info("{} request is {}", getClass().getName(), JSON.toJSONString(request));
         if(!currentStream(consumer)) {
             return runRequest(request, stops, consumer, extraAttributes);
         } else {

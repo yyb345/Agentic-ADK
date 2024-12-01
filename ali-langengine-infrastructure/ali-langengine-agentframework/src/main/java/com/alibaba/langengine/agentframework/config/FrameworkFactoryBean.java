@@ -15,6 +15,7 @@
  */
 package com.alibaba.langengine.agentframework.config;
 
+import com.alibaba.langengine.agentframework.agentcore.SimpleListenerExecutor;
 import com.alibaba.langengine.agentframework.behavior.AgentBehaviorHelper;
 import com.alibaba.smart.framework.engine.SmartEngine;
 import com.alibaba.smart.framework.engine.configuration.ConfigurationOption;
@@ -48,6 +49,9 @@ public class FrameworkFactoryBean implements FactoryBean<SmartEngine>, Initializ
 
     @Autowired
     private ExecutorService taskExecutor;
+
+    @Resource
+    private SimpleListenerExecutor simpleListenerExecutor;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -87,6 +91,8 @@ public class FrameworkFactoryBean implements FactoryBean<SmartEngine>, Initializ
 
         processEngineConfiguration.setParallelServiceOrchestration(new AgentParallelServiceOrchestration());
         processEngineConfiguration.setDelegationExecutor(new AgentDelegationExecutor());
+
+        processEngineConfiguration.setListenerExecutor(simpleListenerExecutor);
 
         return processEngineConfiguration;
     }

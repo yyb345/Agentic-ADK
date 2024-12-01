@@ -29,6 +29,38 @@ public class BeanConfig {
     @Bean
     public FrameworkEngineConfiguration agentEngineConfiguration() {
         AgentEngineConfiguration agentEngineConfiguration = new DefaultAgentEngineConfiguration();
+
+        agentEngineConfiguration.setLanguageModelService(new DefaultLanguageModelService());
+        agentEngineConfiguration.setToolCallingService(new DefaultToolCallingSearvice());
+
+        String llmTemplateConfigs = "[{\n" +
+                "\t\"modelId\": \"1\",\n" +
+                "\t\"modelName\": \"gpt-3.5-turbo\",\n" +
+                "\t\"modelTemplate\": \"ChatModelOpenAI\",\n" +
+                "\t\"modelType\": \"openai\",\n" +
+                "    \"autoLlmFlag\": true,\n" +
+                "    \"maxNewTokens\": null\n" +
+                "}]";
+        agentEngineConfiguration.setLlmTemplateConfig(llmTemplateConfigs);
+
+        String cotLlmTemplateConfig = "{\n" +
+                "  \"modelId\": \"1\",\n" +
+                "  \"modelName\": \"gpt-3.5-turbo\",\n" +
+                "  \"modelTemplate\": \"ChatModelOpenAI\",\n" +
+                "  \"modelType\": \"openai\",\n" +
+                "  \"autoLlmFlag\": true,\n" +
+                "  \"maxTokens\": 2048,\n" +
+                "  \"topP\": 1.0,\n" +
+                "  \"topK\": 1,\n" +
+                "  \"temperature\": 0.001,\n" +
+                "  \"sseInc\": true\n" +
+                "}";
+        agentEngineConfiguration.setCotLlmTemplateConfig(cotLlmTemplateConfig);
+
+        agentEngineConfiguration.setCotRetryCount(0);
+
+        agentEngineConfiguration.setCotFallbackLlmTemplateConfig(cotLlmTemplateConfig);
+
         return agentEngineConfiguration;
     }
 }

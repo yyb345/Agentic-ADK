@@ -55,7 +55,7 @@ public class RunnableFunctionCallAgentTest extends BaseTest {
     public void test_with_qwen_function_call() {
         // model
         ChatModelOpenAI model = new ChatModelOpenAI();
-        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+        model.setModel(OpenAIModelConstants.GPT_35_TURBO);
         model.setTemperature(0d);
 
         // prompt
@@ -142,14 +142,14 @@ public class RunnableFunctionCallAgentTest extends BaseTest {
         RunnableAgentExecutor agentExecutor = new RunnableAgentExecutor(agent, tools);
 
 //        String question = "你好，杭州今天天气怎么样";
-//        Object runnableOutput = agentExecutor.invoke(new RunnableHashMap());
-        Object runnableOutput = agentExecutor.stream(new RunnableHashMap(), chunk -> {
-            if(chunk instanceof BaseMessage) {
-                System.out.println(((BaseMessage) chunk).getContent());
-            } else {
-                System.out.println(chunk);
-            }
-        });
+        Object runnableOutput = agentExecutor.invoke(new RunnableHashMap());
+//        Object runnableOutput = agentExecutor.stream(new RunnableHashMap(), chunk -> {
+//            if(chunk instanceof BaseMessage) {
+//                System.out.println(((BaseMessage) chunk).getContent());
+//            } else {
+//                System.out.println(chunk);
+//            }
+//        });
         System.out.println(JSON.toJSONString(runnableOutput));
     }
 

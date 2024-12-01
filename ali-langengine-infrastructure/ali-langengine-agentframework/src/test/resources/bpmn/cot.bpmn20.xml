@@ -1,0 +1,22 @@
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:smart="http://smartengine.org/schema/process" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="smart" id="process_definition_knowledge_retrieval">
+    <process id="llmdemo" isExecutable="true" version="1" sendErrorMessage="1">
+        <startEvent id="start" name="开始"/>
+
+        <serviceTask id="llm" name="llm调用" smart:class="com.alibaba.langengine.agentframework.delegation.FrameworkCotCallingDelegation">
+            <extensionElements>
+                <smart:properties>
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <endEvent id="end" name="结束">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="finalOutputParameters" value="[{&quot;message&quot;:&quot;$!{out_llm}&quot;}]"/>
+                </smart:properties>
+            </extensionElements>
+        </endEvent>
+
+        <sequenceFlow id="seqflow-1" sourceRef="start" targetRef="llm"/>
+        <sequenceFlow id="seqflow-2" sourceRef="llm" targetRef="end" />
+    </process>
+</definitions>

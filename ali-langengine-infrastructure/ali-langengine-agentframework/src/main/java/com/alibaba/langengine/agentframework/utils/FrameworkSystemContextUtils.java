@@ -15,15 +15,24 @@
  */
 package com.alibaba.langengine.agentframework.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.langengine.agentframework.delegation.constants.SystemConstant;
 import com.alibaba.langengine.agentframework.delegation.provider.DelegationHelper;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.langengine.agentframework.engine.AgentOriginRequest;
+import com.alibaba.langengine.agentframework.model.agent.AgentModel;
 import com.alibaba.langengine.agentframework.model.agent.domain.AgentRelation;
+import com.alibaba.langengine.agentframework.model.agent.flow.FlowAgentModel;
 import com.alibaba.langengine.agentframework.model.domain.ChatAttachment;
 import com.alibaba.langengine.agentframework.model.domain.ChatMessage;
 import com.alibaba.langengine.agentframework.model.domain.FrameworkSystemContext;
+import com.alibaba.smart.framework.engine.constant.RequestMapSpecialKeyConstant;
 import com.alibaba.smart.framework.engine.context.ExecutionContext;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -35,7 +44,58 @@ import static com.alibaba.langengine.agentframework.delegation.constants.SystemC
  *
  * @author xiaoxuan.lp
  */
+@Slf4j
 public class FrameworkSystemContextUtils {
+
+    public static void putSystemContext(Map<String, Object> context, AgentOriginRequest agentOriginRequest) {
+        // 设置系统变量
+        Map<String, Object> system = new HashMap<String, Object>() {{
+            // 会话问答
+            put(SystemConstant.QUERY_KEY, agentOriginRequest.getQuery());
+            // 会话附件
+            if(agentOriginRequest.getAttachments() != null) {
+                put(SystemConstant.CHAT_ATTACHMENT_KEY, agentOriginRequest.getAttachments());
+                List<String> attachementUrlList = new ArrayList<>();
+                for (ChatAttachment attachment : agentOriginRequest.getAttachments()) {
+                    if(!StringUtils.isEmpty(attachment.getUrl())) {
+                        attachementUrlList.add(attachment.getUrl());
+                    } else {
+                        if(attachment.getProps() != null && attachment.getProps().get("url") != null) {
+                            attachementUrlList.add(attachment.getProps().get("url").toString());
+                        }
+                    }
+                }
+                log.info("attachmentUrlList is " + JSON.toJSONString(attachementUrlList));
+                put(SystemConstant.ATTACHMENT_URL_LIST_KEY, attachementUrlList);
+            }
+
+            AgentModel agentModel = agentOriginRequest.getAgentModel();
+            if (agentModel instanceof FlowAgentModel) {
+                FlowAgentModel flowAgentModel = (FlowAgentModel) agentModel;
+
+                if (flowAgentModel.getRelation() != null) {
+                    put(SystemConstant.AGENT_RELATION_KEY, flowAgentModel.getRelation());
+                    put(SystemConstant.WELCOME_MESSAGE_KEY, flowAgentModel.getRelation().getWelcomeMessage());
+                    put(SystemConstant.RECOMMEND_QUESTIONS_KEY, flowAgentModel.getRelation().getRecommendQuestions());
+                }
+            }
+            // 是否异步调用
+            put(SystemConstant.ASYNC_KEY, agentOriginRequest.getAsync());
+            put(SystemConstant.SESSION_ID_KEY, agentOriginRequest.getSessionId());
+//            put(SystemConstant.HISTORY_KEY, buildChatMsg(agentOriginRequest, sessionId));
+
+            if (agentOriginRequest.getChunkConsumer() != null) {
+                put(SystemConstant.CHUNK_CONSUMER_KEY, agentOriginRequest.getChunkConsumer());
+            }
+
+            put(SystemConstant.AGENT_CODE_KEY, agentOriginRequest.getAgentCode());
+            put(SystemConstant.AGENT_NAME_KEY, agentOriginRequest.getAgentName());
+            put(SystemConstant.REQUEST_ID_KEY, agentOriginRequest.getRequestId());
+        }};
+        context.put(SYSTEM_KEY, system);
+        // 并发超时时间
+        context.put(RequestMapSpecialKeyConstant.LATCH_WAIT_TIME_IN_MILLISECOND, 3 * 60 * 1000L);
+    }
 
     /**
      * 临时用于兼容，建议全都改成getSystemContext(JSONObject request, ExecutionContext executionContext)
@@ -98,8 +158,6 @@ public class FrameworkSystemContextUtils {
         }
 
         Boolean async = DelegationHelper.getSystemBooleanOrDefault(request, SystemConstant.ASYNC_KEY, false);
-//        Boolean batch = DelegationHelper.getSystemBooleanOrDefault(request, BATCH_KEY, false);
-//        Boolean offline = DelegationHelper.getSystemBooleanOrDefault(request, OFFLINE_KEY, false);
 
         FrameworkSystemContext systemContext = new FrameworkSystemContext();
         systemContext.setShortcutContent(request.get(SystemConstant.SHORTCUT_CONTENT_KEY));
@@ -120,9 +178,6 @@ public class FrameworkSystemContextUtils {
         systemContext.setAsync(async);
         systemContext.setInvokeContext(invokeContext);
         systemContext.setExecutionContext(executionContext);
-//        systemContext.setBatch(batch);
-//        systemContext.setOffline(offline);
-//        systemContext.setFlowNodeStream(flowNodeStream);
 
         return systemContext;
     }

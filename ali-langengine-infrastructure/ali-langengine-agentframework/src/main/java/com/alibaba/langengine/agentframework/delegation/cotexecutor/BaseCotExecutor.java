@@ -674,7 +674,8 @@ public abstract class BaseCotExecutor implements CotCallingConstant {
                             || "Qwen2-72B".equals(finalLlmTemplateConfig.getModelName())
                     )) || ("ApiGatewayChatModel".equals(finalLlmTemplateConfig.getModelTemplate()))
                             || ("IdealabOpenAIChatModel".equals(finalLlmTemplateConfig.getModelTemplate())
-                            && ("gpt-4o-0513".equals(finalLlmTemplateConfig.getModelName())))) {
+                            && ("gpt-4o-0513".equals(finalLlmTemplateConfig.getModelName())))
+                        || ("ChatModelOpenAI".equals(finalLlmTemplateConfig.getModelTemplate()))) {
                         log.info("aiMessage.getAdditionalKwargs is " + JSON.toJSONString(aiMessage.getAdditionalKwargs()));
                         if (aiMessage.getAdditionalKwargs() == null) {
                             matchMessageReturn = true;

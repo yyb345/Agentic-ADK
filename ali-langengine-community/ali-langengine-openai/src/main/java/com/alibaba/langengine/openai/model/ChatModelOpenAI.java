@@ -21,12 +21,16 @@ import com.alibaba.langengine.core.messages.AIMessage;
 import com.alibaba.langengine.core.messages.BaseMessage;
 import com.alibaba.langengine.core.messages.MessageConverter;
 import com.alibaba.langengine.core.model.ResponseCollector;
+import com.alibaba.langengine.core.model.fastchat.completion.chat.ChatCompletionChoice;
 import com.alibaba.langengine.core.model.fastchat.completion.chat.ChatCompletionRequest;
 import com.alibaba.langengine.core.model.fastchat.completion.chat.ChatMessage;
 import com.alibaba.langengine.core.model.fastchat.completion.chat.FunctionDefinition;
 import com.alibaba.langengine.core.model.fastchat.service.FastChatService;
+import com.alibaba.langengine.core.util.LLMUtils;
+import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.Duration;
@@ -98,7 +102,7 @@ public class ChatModelOpenAI extends BaseChatModel<ChatCompletionRequest> {
     /**
      * 是否流式增量
      */
-    private boolean sseInc = false;
+    private boolean sseInc = true;
 
     @Override
     public ChatCompletionRequest buildRequest(List<ChatMessage> chatMessages, List<FunctionDefinition> functions, List<String> stops, Consumer<BaseMessage> consumer, Map<String, Object> extraAttributes) {
@@ -142,7 +146,7 @@ public class ChatModelOpenAI extends BaseChatModel<ChatCompletionRequest> {
                 } else {
                     answer = chatMessage.getContent().toString();
                 }
-                log.warn(getModel() + " chat answer:{},{}", role, answer);
+                log.warn(getModel() + " chat answer is {}", answer);
                 if (message != null) {
                     baseMessage.set(message);
                 }
@@ -156,27 +160,87 @@ public class ChatModelOpenAI extends BaseChatModel<ChatCompletionRequest> {
     public BaseMessage runRequestStream(ChatCompletionRequest request, List<String> stops, Consumer<BaseMessage> consumer, Map<String, Object> extraAttributes) {
         AtomicReference<BaseMessage> baseMessage = new AtomicReference<>();
         AtomicReference<ResponseCollector> answerContent = new AtomicReference<>(new ResponseCollector(sseInc));
-
+        AtomicReference<Object> functionCallContent = new AtomicReference<>();
+        AtomicReference<ResponseCollector> functionCallNameContent = new AtomicReference<>(new ResponseCollector(sseInc));
+        AtomicReference<ResponseCollector> argumentContent = new AtomicReference<>(new ResponseCollector(sseInc));
+        AtomicReference<String> role = new AtomicReference<>();
         service.streamChatCompletion(request)
                 .doOnError(Throwable::printStackTrace)
                 .blockingForEach(e -> {
-                    ChatMessage chatMessage = e.getChoices().get(0).getMessage();
+                    log.info("chunk result is {}", JSON.toJSONString(e));
+                    if(CollectionUtils.isEmpty(e.getChoices())) {
+                        log.error("chunk result choices is empty");
+                        return;
+                    }
+
+                    ChatCompletionChoice choice = e.getChoices().get(0);
+                    if("stop".equals(choice.getFinishReason()) || "function_call".equals(choice.getFinishReason())) {
+                        return;
+                    }
+                    ChatMessage chatMessage = choice.getMessage();
                     if(chatMessage != null) {
+                        if(!StringUtils.isEmpty(chatMessage.getRole())) {
+                            role.set(chatMessage.getRole());
+                        }
+                        chatMessage.setRole(role.get());
                         BaseMessage message = MessageConverter.convertChatMessageToMessage(chatMessage);
-                        String role = chatMessage.getRole();
-                        String answer = chatMessage.getContent().toString();
-                        log.warn(getModel() + " chat stream answer:{},{}", role, answer);
                         if(message != null) {
-                            answerContent.get().collect(message.getContent());
-                            String response = answerContent.get().joining();
-                            message.setContent(response);
-                            baseMessage.set(message);
-                            if(consumer != null) {
-                                consumer.accept(message);
+                            if(chatMessage.getContent() != null) {
+                                String answer = chatMessage.getContent().toString();
+                                log.warn(getModel() + " chat stream answer is {}", answer);
+                                if (message != null) {
+                                    answerContent.get().collect(message.getContent());
+                                    String response = answerContent.get().joining();
+                                    message.setContent(response);
+                                    baseMessage.set(message);
+                                    if (consumer != null) {
+                                        consumer.accept(message);
+                                    }
+                                }
+                            } else if (chatMessage.getFunctionCall() != null && chatMessage.getFunctionCall().size() > 0) {
+                                Map<String, Object> functionCallMap = Maps.newHashMap();
+                                if (chatMessage.getFunctionCall().get("name") != null) {
+                                    functionCallNameContent.get().collect(chatMessage.getFunctionCall().get("name").toString());
+                                }
+                                if (chatMessage.getFunctionCall().get("arguments") != null) {
+                                    argumentContent.get().collect(chatMessage.getFunctionCall().get("arguments").toString());
+                                }
+                                functionCallMap.put("function_call", new HashMap<String, String>() {{
+                                    put("name", functionCallNameContent.get().joining());
+                                    put("arguments", argumentContent.get().joining());
+                                }});
+                                functionCallContent.set(functionCallMap);
+
+                                if (functionCallContent.get() != null) {
+                                    if (consumer != null) {
+                                            String functionCallContentString = JSON.toJSONString(functionCallContent.get());
+                                            log.warn(getModel() + " functionCall stream answer is {}", functionCallContentString);
+                                            AIMessage aiMessage = new AIMessage();
+                                            aiMessage.setAdditionalKwargs((Map<String, Object>) functionCallContent.get());
+//                                        aiMessage.setContent(JSON.toJSONString(aiMessage.getAdditionalKwargs()));
+                                            consumer.accept(aiMessage);
+                                    }
+                                }
                             }
                         }
                     }
                 });
+
+        if(functionCallContent.get() != null) {
+            AIMessage aiMessage = new AIMessage();
+            aiMessage.setAdditionalKwargs((Map<String, Object>)functionCallContent.get());
+            baseMessage.set(aiMessage);
+            log.info("functionCallContent get is {}", JSON.toJSONString(aiMessage));
+            return baseMessage.get();
+        }
+
+        String responseContent = answerContent.get().joining();
+
+        log.warn(getModel() + " final answer:" + responseContent);
+
+        AIMessage aiMessage = new AIMessage();
+        aiMessage.setContent(responseContent);
+        baseMessage.set(aiMessage);
 
         return baseMessage.get();
     }

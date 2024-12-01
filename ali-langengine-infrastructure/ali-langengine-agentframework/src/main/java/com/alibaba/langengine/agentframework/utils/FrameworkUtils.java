@@ -79,7 +79,7 @@ public class FrameworkUtils {
      * 初始化velocity回调函数
      */
     static {
-        Velocity.setProperty("eventhandler.invalidreferences.class", "com.alibaba.agentmagic.framework.listener.VelocityInvalidRefHandler");
+        Velocity.setProperty("eventhandler.invalidreferences.class", "com.alibaba.langengine.agentframework.listener.VelocityInvalidRefHandler");
     }
 
     public static CompletableFuture<AgentResult<Map<String, Object>>> getResultFuture(ExecutionContext context) {
