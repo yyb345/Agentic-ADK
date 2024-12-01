@@ -130,7 +130,7 @@ public class ChatCompletionRequest {
      * A list of tools the model may call. Currently, only functions are supported as a tool.
      * Use this to provide a list of functions the model may generate JSON inputs for.
      */
-//    private List<ToolDefinition> tools;
+    private List<ToolDefinition> tools;
 
     /**
      * string or object

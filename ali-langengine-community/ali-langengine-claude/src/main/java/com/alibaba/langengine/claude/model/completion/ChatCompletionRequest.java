@@ -46,11 +46,4 @@ public class ChatCompletionRequest extends com.alibaba.langengine.core.model.fas
      * Whether or not to store the output of this chat completion request for use in our model distillation or evals products.
      */
     private String store;
-
-    /**
-     * A list of tools the model may call. Currently, only functions are supported as a tool.
-     * Use this to provide a list of functions the model may generate JSON inputs for.
-     */
-    @JsonProperty("tools")
-    private List<ToolDefinition> tools;
 }

@@ -60,6 +60,8 @@
 		<module>ali-langengine-infrastructure/ali-langengine-docloader</module>
 		<module>ali-langengine-infrastructure/ali-langengine-tool</module>
 		<module>ali-langengine-infrastructure/ali-langengine-gpt</module>
+		<module>ali-langengine-infrastructure/ali-langengine-agentframework</module>
+		<module>ali-langengine-infrastructure/ali-langengine-agentframework-model</module>
 		<module>ali-langengine-community/ali-langengine-openai</module>
 		<module>ali-langengine-community/ali-langengine-azure</module>
 		<module>ali-langengine-community/ali-langengine-dashscope</module>
@@ -347,31 +349,31 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven-surefire-plugin.version}</version>
 				</plugin>
-				<plugin>
-					<groupId>com.mycila</groupId>
-					<artifactId>license-maven-plugin</artifactId>
-					<version>3.0</version>
-					<configuration>
-						<header>${project.basedir}/license-header.txt</header>
-						<includes>
-							<include>**/*.java</include>
-						</includes>
-					</configuration>
-					<executions>
-						<execution>
-							<id>format-license</id>
-							<goals>
-								<goal>format</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>check-license</id>
-							<goals>
-								<goal>check</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
+<!--				<plugin>-->
+<!--					<groupId>com.mycila</groupId>-->
+<!--					<artifactId>license-maven-plugin</artifactId>-->
+<!--					<version>3.0</version>-->
+<!--					<configuration>-->
+<!--						<header>${project.basedir}/license-header.txt</header>-->
+<!--						<includes>-->
+<!--							<include>**/*.java</include>-->
+<!--						</includes>-->
+<!--					</configuration>-->
+<!--					<executions>-->
+<!--						<execution>-->
+<!--							<id>format-license</id>-->
+<!--							<goals>-->
+<!--								<goal>format</goal>-->
+<!--							</goals>-->
+<!--						</execution>-->
+<!--						<execution>-->
+<!--							<id>check-license</id>-->
+<!--							<goals>-->
+<!--								<goal>check</goal>-->
+<!--							</goals>-->
+<!--						</execution>-->
+<!--					</executions>-->
+<!--				</plugin>-->
 			</plugins>
 		</pluginManagement>
 	</build>

@@ -17,9 +17,10 @@ package com.alibaba.langengine.autogen.tools;
 
 import com.alibaba.langengine.autogen.agentchat.AssistantAgent;
 import com.alibaba.langengine.autogen.agentchat.UserProxyAgent;
-import com.alibaba.langengine.core.model.FakeAI;
 import com.alibaba.langengine.core.tool.StructuredTool;
 import com.alibaba.langengine.core.tool.ToolExecuteResult;
+import com.alibaba.langengine.openai.model.ChatOpenAI;
+import com.alibaba.langengine.openai.model.OpenAIModelConstants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -42,7 +43,8 @@ public class ExpertServiceTool extends StructuredTool {
     public ToolExecuteResult execute(String message) {
 //        log.error("ExpertServiceTool message:" + message);
 
-        FakeAI llm = new FakeAI();
+        ChatOpenAI llm = new ChatOpenAI();
+        llm.setModel(OpenAIModelConstants.GPT_4_TURBO);
 
         AssistantAgent assistant_for_expert = new AssistantAgent("assistant_for_expert", llm);
 

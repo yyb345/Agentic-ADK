@@ -1,31 +1,31 @@
 **ali-langengine**
 
-ali-langengine是一个基于Java的AI应用开发框架。它赋予LLM两大核心能力：
+ali-langengine is a Java-based AI application development framework. It endows LLM with two core capabilities:
 
-1. 数据感知，将语言模型与其他数据源相连接；
+1. Data Awareness: Connecting language models with other data sources.
 
-2. 代理能力，允许语言模型与工程系统化能力互动；
+2. Agency Capability: Allowing language models to interact with engineering and systematic capabilities.
 
-ali-langengine的主要应用场景包括个人助手、基于文档的问答、聊天机器人、查询表格数据、代码分析、低代码应用生成等。
+The main application scenarios of ali-langengine include personal assistants, document-based Q&A, chatbots, querying tabular data, code analysis, low-code application generation, etc.
 
-**相关代码**
+**Related Code**
 
-ali-langengine-core：最核心的AI应用框架引擎模块。
+ali-langengine-core: The most essential AI application framework engine module.
 
-ali-langengine-infrastructure：AI应用框架基础设施模块。
+ali-langengine-infrastructure: The infrastructure module of the AI application framework.
 
-ali-langengine-community：社区开源共建模块。
+ali-langengine-community: Community open-source co-construction module.
 
-ali-langengine-demo：相关示例模块。
+ali-langengine-demo: Related example module.
 
-**相关配置**
+**Related Configuration**
 
 ali-langengine-openai
 ```properties
 openai_server_url=https://api.openai.com/
 openai_api_key=******
 openai_api_timeout=100
-# 兼容
+# compatible
 OPENAI_API_KEY=******
 ```
 
@@ -35,7 +35,7 @@ ali-langengine-dashscope
 dashscope_server_url=https://dashscope.aliyuncs.com/
 dashscope_api_key=******
 dashscope_api_timeout=100
-# 兼容
+# compatible
 DASH_SCOPE_API=******
 ```
 

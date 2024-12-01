@@ -1,0 +1,79 @@
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:smart="http://smartengine.org/schema/process" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="smart" id="process_definition_knowledge_retrieval">
+    <process id="ioc_process" isExecutable="true" version="1">
+        <startEvent id="start" name="开始"/>
+        <serviceTask id="llm_calling_task1" name="LLM调用1-分析是否走检索服务"
+                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkLlmCallingDelegation">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="query" value="$!{system.query}" />
+                    <smart:value name="prompt" value="$!{system.promptInfo.iocPrompt}" />
+                    <smart:value name="outputParameters" value="[{&quot;answer&quot;:&quot;$!{out_llm_calling_task1.answer}&quot;}]" />
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <serviceTask id="llm_calling_task3" name="LLM调用3-走NL2SQL服务"
+                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkLlmCallingDelegation">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="query" value="$!{system.query}" />
+                    <smart:value name="prompt" value="$!{system.promptInfo.nl2sqlPrompt}" />
+                    <smart:value name="outputParameters" value="[{&quot;sqlCmd&quot;:&quot;$!{out_llm_calling_task3.answer}&quot;}]" />
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <serviceTask id="knowledge_retrieval_task" name="知识库检索"
+                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkKnowledgeRetrievalDelegation">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="query" value="$!{system.query}" />
+                    <smart:value name="knowledgeType" value="document" />
+                    <smart:value name="knowledgeMode" value="offline" />
+                    <smart:value name="knowledgeList" value="[{&quot;knowledgeId&quot;:&quot;1-1708913266511-5181&quot;}]" />
+                    <smart:value name="knowledgeTopN" value="5" />
+                    <smart:value name="finalOutputParameters" value="[{&quot;document&quot;:&quot;$!{out_knowledge_retrieval_task}&quot;}]" />
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <serviceTask id="llm_calling_task2" name="LLM调用2-不走检索直接LLM调用"/>
+        <serviceTask id="sql_query_task" name="SQL查询"
+                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkScriptEvaluateDelegation">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="scriptService" value="com.alibaba.agentmagic.framework.serviceTest.SQLQueryService" />
+                    <smart:value name="finalOutputParameters" value="[{&quot;sqlResult&quot;:&quot;$!{out_sql_query_task.sqlResult}&quot;}]" />
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <serviceTask id="llm_calling_task4" name="LLM调用4-多路召回合并"
+                     smart:class="com.alibaba.agentmagic.framework.delegation.FrameworkLlmCallingDelegation">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="query" value="$!{system.query}" />
+                    <smart:value name="prompt" value="帮我针对上下文总结一下内容\n\n问题：$!{system.query}\n\n上下文：\nDocument\n$!{out_knowledge_retrieval_task}\nSQLResult\n$!{out_sql_query_task.sqlResult}\n\n$!{system.history}" />
+                    <smart:value name="finalOutputParameters" value="[{&quot;answer&quot;:&quot;$!{out_llm_calling_task4.answer}&quot;}]" />
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <exclusiveGateway id="exclusive-gateway-1710130786998" name="排他网关"/>
+        <parallelGateway id="parallel-gateway-1710130792423" name="并行事件"/>
+        <parallelGateway id="parallel-gateway-1710158178854" name="并行事件"/>
+
+        <endEvent id="end" name="结束"/>
+        <sequenceFlow id="seqflow-1710130805121" sourceRef="llm_calling_task1" targetRef="exclusive-gateway-1710130786998"/>
+        <sequenceFlow id="seqflow-1710130808419" sourceRef="exclusive-gateway-1710130786998" targetRef="parallel-gateway-1710130792423">
+            <conditionExpression type="mvel">out_llm_calling_task4.answer == '&lt;EnoughInfo&gt;'</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="seqflow-1710130819074" sourceRef="parallel-gateway-1710130792423" targetRef="llm_calling_task3"/>
+        <sequenceFlow id="seqflow-1710130863119" sourceRef="start" targetRef="llm_calling_task1"/>
+        <sequenceFlow id="seqflow-1710130892203" sourceRef="exclusive-gateway-1710130786998" targetRef="llm_calling_task2">
+            <conditionExpression type="mvel">out_llm_calling_task4.answer == '&lt;CommonQuestion&gt;'</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="seqflow-1710130910960" sourceRef="parallel-gateway-1710130792423" targetRef="knowledge_retrieval_task"/>
+        <sequenceFlow id="seqflow-1710130947086" sourceRef="llm_calling_task2" targetRef="end"/>
+        <sequenceFlow id="seqflow-1710158147980" sourceRef="llm_calling_task3" targetRef="sql_query_task"/>
+        <sequenceFlow id="seqflow-1710158182838" sourceRef="sql_query_task" targetRef="parallel-gateway-1710158178854"/>
+        <sequenceFlow id="seqflow-1710158186151" sourceRef="knowledge_retrieval_task" targetRef="parallel-gateway-1710158178854"/>
+        <sequenceFlow id="seqflow-1710158220881" sourceRef="parallel-gateway-1710158178854" targetRef="llm_calling_task4"/>
+        <sequenceFlow id="seqflow-1710158256331" sourceRef="llm_calling_task4" targetRef="end"/>
+    </process>
+</definitions>

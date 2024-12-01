@@ -43,6 +43,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -63,6 +64,11 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class ConversableAgent extends Agent {
+
+    /**
+     * 是否中止，如果设置该函数用这个判断
+     */
+    private Predicate<Map<String, Object>> isTermination;
 
     /**
      * maximum number of consecutive auto replies
@@ -738,7 +744,11 @@ public class ConversableAgent extends Agent {
         }
         return value;
     }
+
     private boolean isTerminationMsg(Map<String, Object> message) {
+        if(isTermination != null) {
+            return isTermination.test(message);
+        }
         return message.get("content") != null ? message.get("content").toString().trim().endsWith("TERMINATE") : false;
     }
 
@@ -899,5 +909,13 @@ public class ConversableAgent extends Agent {
 
     public void setCodeEngine(CodeEngine codeEngine) {
         this.codeEngine = codeEngine;
+    }
+
+    public Predicate<Map<String, Object>> getIsTermination() {
+        return isTermination;
+    }
+
+    public void setIsTermination(Predicate<Map<String, Object>> isTermination) {
+        this.isTermination = isTermination;
     }
 }

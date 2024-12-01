@@ -15,30 +15,193 @@
  */
 package com.alibaba.langengine.autogen;
 
-import com.alibaba.langengine.autogen.agentchat.AssistantAgent;
-import com.alibaba.langengine.autogen.agentchat.GroupChat;
-import com.alibaba.langengine.autogen.agentchat.GroupChatManager;
-import com.alibaba.langengine.autogen.agentchat.UserProxyAgent;
+import com.alibaba.langengine.autogen.agentchat.*;
 import com.alibaba.langengine.autogen.tools.CircumferenceTool;
 import com.alibaba.langengine.autogen.tools.ExpertServiceTool;
 import com.alibaba.langengine.autogen.tools.ReadFileTool;
 import com.alibaba.langengine.core.tool.StructuredTool;
+import com.alibaba.langengine.openai.model.ChatModelOpenAI;
 import com.alibaba.langengine.openai.model.ChatOpenAI;
 import com.alibaba.langengine.openai.model.OpenAIModelConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 public class AutoGenMain {
 
     public static void main(String[] args) {
+        example1();
 //        getting_started();
 //        agentchat_auto_feedback_from_code_execution();
 //        agentchat_human_feedback();
 //        agentchat_two_users();
 //        agentchat_groupchat();
-        agentchat_langchain();
+//        agentchat_langchain();
+    }
+
+    private static void example1() {
+        // quesition
+        String question = "I have a number between 1 and 100. Guess it!";
+        System.out.println("Question: " + question);
+
+        // llm
+        ChatOpenAI llm = new ChatOpenAI();
+        llm.setModel(OpenAIModelConstants.GPT_4);
+
+        // check result
+        Predicate<Map<String, Object>> terminiationFunc = message -> {
+            if(message.get("content") != null) {
+                if(message.get("content").toString().contains("53")) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        };
+
+        ConversableAgent agentWithNumber = new ConversableAgent(
+                "agent_with_number",
+                llm,
+                "You are playing a game of guess-my-number. You have the number 53 in your mind.",
+                null, "NEVER");
+        agentWithNumber.setIsTermination(terminiationFunc);
+
+        ConversableAgent agentGuessNumber = new ConversableAgent(
+                "agent_guess_number",
+                llm,
+                "I have a number in my mind, and you will try to guess it.",
+                null, "NEVER");
+
+        agentWithNumber.initiateChat(agentGuessNumber, question);
+    }
+
+    private static void example2() {
+        // quesition
+        String question = "今天杭州的天气如何，再帮我查下杭州的交通情况";
+        System.out.println("Question: " + question);
+
+        // llm
+        ChatModelOpenAI llm = new ChatModelOpenAI();
+        llm.setModel(OpenAIModelConstants.GPT_4);
+
+        // check result
+        Predicate<Map<String, Object>> terminiationFunc = message -> {
+            if(message.get("content") != null) {
+                if(message.get("content").toString().contains("2")) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        };
+
+        UserProxyAgent user_proxy = new UserProxyAgent("user_proxy",
+                llm, "你是一个人类代理", null);
+//        user_proxy.setIsTermination(terminiationFunc);
+        user_proxy.setHumanInputMode("NEVER");
+
+        AssistantAgent getWeatherAgent = new AssistantAgent(
+                "getWeather",
+                llm,
+                "你是一个天气预报助理，只会搜索城市的天气，你知道今天杭州天气是10摄氏度",
+                null);
+        AssistantAgent transportationAgent = new AssistantAgent(
+                "transportation",
+                llm,
+                "你是一个交通查询小助手，你知道杭州今天的交通是比较拥堵，注意错峰",
+                null);
+
+        List<Agent> agents = new ArrayList<>();
+        agents.add(user_proxy);
+        agents.add(getWeatherAgent);
+        agents.add(transportationAgent);
+
+        GroupChat groupChat = new GroupChat();
+        groupChat.setAgents(agents);
+        groupChat.setMessages(new ArrayList<>());
+        groupChat.setMaxRound(5);
+
+        GroupChatManager manager = new GroupChatManager("chat_manager", llm, groupChat);
+//        manager.setIsTermination(terminiationFunc);
+//        manager.setHumanInputMode("NEVER");
+//        manager.setSystemMessage("如果得到想要的答案，就立即结束");
+        user_proxy.initiateChat(manager, question);
+    }
+
+    private static void example3() {
+        // quesition
+        String question = "帮我计算 1+1 等于几";
+        System.out.println("Question: " + question);
+
+        // llm
+        ChatOpenAI llm = new ChatOpenAI();
+        llm.setModel(OpenAIModelConstants.GPT_4);
+
+        // check result
+        Predicate<Map<String, Object>> terminiationFunc = message -> {
+            if(message.get("content") != null) {
+                if(message.get("content").toString().contains("2")) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        };
+
+        UserProxyAgent user_proxy = new UserProxyAgent("user_proxy",
+                llm,
+                "你是一名学生",
+                null);
+//        user_proxy.setIsTermination(terminiationFunc);
+        user_proxy.setHumanInputMode("NEVER");
+
+//        AssistantAgent stepAgent = new AssistantAgent(
+//                "step",
+//                llm,
+//                "你擅长把数学公式拆解成加减乘除的步骤，不要告诉最终答案",
+//                null);
+        AssistantAgent additionAgent = new AssistantAgent(
+                "addition",
+                llm,
+                "You are an adding calculator. ",
+                null);
+        AssistantAgent subtractionAgent = new AssistantAgent(
+                "subtraction",
+                llm,
+                "You are a subtraction calculator. ",
+                null);
+        AssistantAgent multiplicationAgent = new AssistantAgent(
+                "multiplication",
+                llm,
+                "You are a multiplication calculator. ",
+                null);
+        AssistantAgent divisionAgent = new AssistantAgent(
+                "division",
+                llm,
+                "You are a division calculator. ",
+                null);
+
+        List<Agent> agents = new ArrayList<>();
+        agents.add(user_proxy);
+//        agents.add(stepAgent);
+        agents.add(additionAgent);
+        agents.add(subtractionAgent);
+        agents.add(multiplicationAgent);
+        agents.add(divisionAgent);
+
+        GroupChat groupChat = new GroupChat();
+        groupChat.setAgents(agents);
+        groupChat.setMessages(new ArrayList<>());
+        groupChat.setMaxRound(5);
+
+        GroupChatManager manager = new GroupChatManager("chat_manager", llm, groupChat);
+//        manager.setIsTermination(terminiationFunc);
+//        manager.setHumanInputMode("NEVER");
+//        manager.setSystemMessage("如果得到想要的答案，就立即结束");
+        user_proxy.initiateChat(manager, question);
     }
 
     /**
@@ -148,7 +311,7 @@ public class AutoGenMain {
     private static void agentchat_groupchat() {
         // success
         ChatOpenAI llm = new ChatOpenAI();
-        llm.setModel(OpenAIModelConstants.GPT_4);
+        llm.setModel(OpenAIModelConstants.GPT_4_TURBO);
 
         UserProxyAgent user_proxy = new UserProxyAgent("User_proxy",  llm, "A human admin.", new HashMap<String, Object>() {{
             put("work_dir", "groupchat");
@@ -172,8 +335,8 @@ public class AutoGenMain {
 
 //        String question = "Find a latest paper about gpt-4 on arxiv and find its potential applications in software.";
 //        String question = "我想实现一个python语言打印\"hello world\"的控制台应用程序，该怎么做";
-//        String question = "我想实现一个图书管理系统，该怎么做";
-        String question = "帮我执行获取当前目录的上一级目录的所有文件，通过shell指令";
+        String question = "我想实现一个图书管理系统，该怎么做";
+//        String question = "帮我执行获取当前目录的上一级目录的所有文件，通过shell指令";
         user_proxy.initiateChat(manager, question);
     }
 
