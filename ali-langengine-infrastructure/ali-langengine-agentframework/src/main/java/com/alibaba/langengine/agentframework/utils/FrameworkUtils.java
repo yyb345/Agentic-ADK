@@ -338,7 +338,7 @@ public class FrameworkUtils {
         }
         String outputData = inputData;
         try {
-            log.info("json string before:" + inputData + ",agentCode:" + agentCode);
+//            log.info("json string before:" + inputData + ",agentCode:" + agentCode);
 //            log.info("buildInputData agentCode {}", agentCode);
 
             if (inputData.indexOf("#{if}") < 0) {
@@ -368,13 +368,13 @@ public class FrameworkUtils {
                             processJSONObject(paramsObject, requestParam);
                             outputData = paramsObject.toJSONString();
                         }
-                        log.info("gson json string success after: {}", outputData);
+//                        log.info("gson json string success after: {}", outputData);
                     } catch (Throwable e) {
-                        log.error("buildInputDataValue error", e);
+//                        log.error("buildInputDataValue error", e);
                         StringWriter stringWriter = new StringWriter();
                         Velocity.evaluate(velocityContext, stringWriter, activityId, inputData);
                         outputData = stringWriter.toString();
-                        log.info("gson json string error after:" + outputData);
+//                        log.info("gson json string error after:" + outputData);
                     }
                 } else {
                     StringWriter stringWriter = new StringWriter();

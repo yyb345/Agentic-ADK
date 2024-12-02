@@ -64,15 +64,9 @@ public class SystemConstant {
     @Deprecated
     public static final String OFFLINE_BATCH_KEY = "offlineBatch";
 
-//    public static final String OFFLINE_KEY = "offline";
-//
-//    public static final String BATCH_KEY = "batch";
-
-    public static final String TASK_CONTEXT_KEY = "taskContext";
-
     public static final String APIKEY_KEY = "apiKey";
 
-//    public static final String PROMPT_INFO_KEY = "promptInfo";
+    public static final String PROMPT_INFO_KEY = "promptInfo";
 
     public static final String HISTORY_KEY = "history";
 

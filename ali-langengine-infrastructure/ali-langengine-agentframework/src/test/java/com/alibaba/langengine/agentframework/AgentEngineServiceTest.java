@@ -19,6 +19,7 @@ import com.alibaba.langengine.agentframework.config.BeanConfig;
 import com.alibaba.langengine.agentframework.config.MockAgentProcessDefineManager;
 import com.alibaba.langengine.agentframework.engine.AgentOriginRequest;
 import com.alibaba.langengine.agentframework.manager.AgentProcessDefineManager;
+import com.alibaba.langengine.agentframework.model.FrameworkEngineConfiguration;
 import com.alibaba.langengine.agentframework.model.agent.domain.AgentRelation;
 import com.alibaba.langengine.agentframework.model.agent.flow.FlowAgentModel;
 import com.alibaba.langengine.agentframework.process.AgentProcessService;
@@ -36,12 +37,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static com.alibaba.langengine.agentframework.delegation.constants.SystemConstant.*;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {  UnitTestApplication.class, BeanConfig.class, MockAgentProcessDefineManager.class})
 public class AgentEngineServiceTest {
 
     @Resource
     private AgentProcessService agentProcessService;
+    @Resource
+    private FrameworkEngineConfiguration agentEngineConfiguration;
 
     @Test
     public void test_run() {
@@ -108,7 +113,19 @@ public class AgentEngineServiceTest {
 
         AgentResult<Map<String,Object>> agentResult = agentProcessService.startProcessInstanceByBpmnXml(processDefinitionContent, context);
         System.out.println("agentResult:" + JSON.toJSONString(agentResult));
+    }
 
+    @Test
+    public void test_startProcessInstance() {
+        String processDefinitionContent = IOUtils.read("bpmn/ioc_process.bpmn20.xml");
 
+        Map<String, Object> context = new HashMap<>();
+        Map<String, Object> system = new HashMap<String, Object>() {{
+            put(QUERY_KEY, "<EnoughInfo>");
+            put(PROMPT_INFO_KEY, agentEngineConfiguration.getPromptService().getPromptInfo());
+        }};
+        context.put(SYSTEM_KEY, system);
+        AgentResult<Map<String,Object>> agentResult = agentProcessService.startProcessInstanceByBpmnXml(processDefinitionContent, context);
+        System.out.println("agentResult:" + agentResult);
     }
 }

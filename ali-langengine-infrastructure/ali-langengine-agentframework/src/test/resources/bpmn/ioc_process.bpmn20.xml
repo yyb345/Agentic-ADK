@@ -61,12 +61,12 @@
         <endEvent id="end" name="结束"/>
         <sequenceFlow id="seqflow-1710130805121" sourceRef="llm_calling_task1" targetRef="exclusive-gateway-1710130786998"/>
         <sequenceFlow id="seqflow-1710130808419" sourceRef="exclusive-gateway-1710130786998" targetRef="parallel-gateway-1710130792423">
-            <conditionExpression type="mvel">out_llm_calling_task4.answer == '&lt;EnoughInfo&gt;'</conditionExpression>
+            <conditionExpression type="mvel">$!{out_llm_calling_task4.answer} == '&lt;EnoughInfo&gt;'</conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="seqflow-1710130819074" sourceRef="parallel-gateway-1710130792423" targetRef="llm_calling_task3"/>
         <sequenceFlow id="seqflow-1710130863119" sourceRef="start" targetRef="llm_calling_task1"/>
         <sequenceFlow id="seqflow-1710130892203" sourceRef="exclusive-gateway-1710130786998" targetRef="llm_calling_task2">
-            <conditionExpression type="mvel">out_llm_calling_task4.answer == '&lt;CommonQuestion&gt;'</conditionExpression>
+            <conditionExpression type="mvel">$!{out_llm_calling_task4.answer} != '&lt;EnoughInfo&gt;'</conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="seqflow-1710130910960" sourceRef="parallel-gateway-1710130792423" targetRef="knowledge_retrieval_task"/>
         <sequenceFlow id="seqflow-1710130947086" sourceRef="llm_calling_task2" targetRef="end"/>

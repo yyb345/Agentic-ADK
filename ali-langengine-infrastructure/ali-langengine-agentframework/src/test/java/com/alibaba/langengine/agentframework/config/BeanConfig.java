@@ -17,6 +17,8 @@ package com.alibaba.langengine.agentframework.config;
 
 import com.alibaba.langengine.agentframework.model.AgentEngineConfiguration;
 import com.alibaba.langengine.agentframework.model.FrameworkEngineConfiguration;
+import com.alibaba.langengine.core.vectorstore.memory.InMemoryDB;
+import com.alibaba.langengine.openai.embeddings.OpenAIEmbeddings;
 import lombok.Data;
 
 import org.springframework.context.annotation.Bean;
@@ -32,6 +34,13 @@ public class BeanConfig {
 
         agentEngineConfiguration.setLanguageModelService(new DefaultLanguageModelService());
         agentEngineConfiguration.setToolCallingService(new DefaultToolCallingSearvice());
+        agentEngineConfiguration.setPromptService(new DefaultPromptService());
+        agentEngineConfiguration.setRetrievalService(new DefaultRetrievalService(agentEngineConfiguration));
+
+        InMemoryDB inMemoryDB = new InMemoryDB();
+        OpenAIEmbeddings openAIEmbeddings = new OpenAIEmbeddings();
+        inMemoryDB.setEmbedding(openAIEmbeddings);
+        agentEngineConfiguration.setVectorStore(inMemoryDB);
 
         String llmTemplateConfigs = "[{\n" +
                 "\t\"modelId\": \"1\",\n" +

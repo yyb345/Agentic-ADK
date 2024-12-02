@@ -189,7 +189,6 @@ public class FrameworkReActIntentDelegation extends FrameworkDelegationBase<Obje
                             sceneInstanceFlow.getDescription(),
                             sceneInstanceFlow.getProcessDefinitionId(),
                             "{}", // TODO 先设置为空json对象，后续可以通过fewshot样本去写入
-//                            JSON.toJSONString(variablesMap),
                             sceneInstanceFlow.getProcessDefinitionId()));
                 }
             }

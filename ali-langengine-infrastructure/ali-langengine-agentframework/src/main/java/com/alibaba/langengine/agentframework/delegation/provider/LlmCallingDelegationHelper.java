@@ -140,8 +140,6 @@ public class LlmCallingDelegationHelper implements LlmCallingConstant {
         // 系统变量
         String query = DelegationHelper.getSystemValue(request, QUERY_KEY);
         Boolean async = DelegationHelper.getSystemBooleanOrDefault(request, SystemConstant.ASYNC_KEY, false);
-//        Boolean batch = DelegationHelper.getSystemBooleanOrDefault(request, BATCH_KEY, false);
-//        Boolean offline = DelegationHelper.getSystemBooleanOrDefault(request, OFFLINE_KEY, false);
         String agentCode = DelegationHelper.getSystemValue(request, SystemConstant.AGENT_CODE_KEY);
         Boolean debug = Boolean.parseBoolean(DelegationHelper.getSystemValue(request, SystemConstant.DEBUG_KEY));
         String sessionId = DelegationHelper.getSystemValue(request, SystemConstant.SESSION_ID_KEY);
