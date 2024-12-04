@@ -60,8 +60,6 @@
 		<module>ali-langengine-infrastructure/ali-langengine-docloader</module>
 		<module>ali-langengine-infrastructure/ali-langengine-tool</module>
 		<module>ali-langengine-infrastructure/ali-langengine-gpt</module>
-		<module>ali-langengine-infrastructure/ali-langengine-agentframework</module>
-		<module>ali-langengine-infrastructure/ali-langengine-agentframework-model</module>
 		<module>ali-langengine-community/ali-langengine-openai</module>
 		<module>ali-langengine-community/ali-langengine-azure</module>
 		<module>ali-langengine-community/ali-langengine-dashscope</module>
