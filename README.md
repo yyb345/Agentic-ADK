@@ -21,6 +21,7 @@ ali-langengine-community: Community open-source co-construction module.
 ali-langengine-demo: Related example module.
 
 **JDK version requirements**
+
 JDK 8+
 
 **Related Configuration**

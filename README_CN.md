@@ -19,6 +19,7 @@ ali-langengine-community：社区开源共建模块。
 ali-langengine-demo：相关示例模块。
 
 **JDK版本要求**
+
 JDK 8+
 
 **相关配置**
