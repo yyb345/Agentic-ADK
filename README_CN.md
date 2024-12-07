@@ -1,22 +1,22 @@
-**ali-langengine**
+**Alibaba langengine**
 
-ali-langengine是一个基于Java的AI应用开发框架。它赋予LLM两大核心能力：
+阿里巴巴langengine是一个基于Java的AI应用开发框架。它赋予LLM两大核心能力：
 
 1. 数据感知，将语言模型与其他数据源相连接；
 
 2. 代理能力，允许语言模型与工程系统化能力互动；
 
-ali-langengine的主要应用场景包括个人助手、基于文档的问答、聊天机器人、查询表格数据、代码分析、低代码应用生成等。
+alibaba-langengine的主要应用场景包括个人助手、基于文档的问答、聊天机器人、查询表格数据、代码分析、低代码应用生成等。
 
 **相关代码**
 
-ali-langengine-core：最核心的AI应用框架引擎模块。
+alibaba-langengine-core：最核心的AI应用框架引擎模块。
 
-ali-langengine-infrastructure：AI应用框架基础设施模块。
+alibaba-langengine-infrastructure：AI应用框架基础设施模块。
 
-ali-langengine-community：社区开源共建模块。
+alibaba-langengine-community：社区开源共建模块。
 
-ali-langengine-demo：相关示例模块。
+alibaba-langengine-demo：相关示例模块。
 
 **JDK版本要求**
 
@@ -24,7 +24,7 @@ JDK 8+
 
 **相关配置**
 
-ali-langengine-openai
+alibaba-langengine-openai
 ```properties
 openai_server_url=https://api.openai.com/
 openai_api_key=******
@@ -33,7 +33,7 @@ openai_api_timeout=100
 OPENAI_API_KEY=******
 ```
 
-ali-langengine-dashscope
+alibaba-langengine-dashscope
 ```properties
 # dashscope api
 dashscope_server_url=https://dashscope.aliyuncs.com/
@@ -43,7 +43,7 @@ dashscope_api_timeout=100
 DASH_SCOPE_API=******
 ```
 
-ali-langengine-tool
+alibaba-langengine-tool
 ```properties
 # bing api
 bing_server_url=https://api.bing.microsoft.com/
@@ -62,7 +62,7 @@ serpapi_key=******
 tavily_api_key=******
 ```
 
-ali-langengine-adbpg
+alibaba-langengine-adbpg
 ```properties
 # adbpg db
 adbpg_datasource_endpoint=******
@@ -71,7 +71,7 @@ adbpg_datasource_u=******
 adbpg_datasource_p=******
 ```
 
-ali-langengine-azure
+alibaba-langengine-azure
 ```properties
 # azure api
 azure_openai_server_url=******
@@ -80,7 +80,7 @@ azure_openai_api_version=******
 azure_openai_api_timeout=100
 ```
 
-ali-langengine-claude
+alibaba-langengine-claude
 ```properties
 # claude api
 anthropic_server_url=https://api.anthropic.com/
@@ -88,14 +88,14 @@ anthropic_api_key=******
 anthropic_api_timeout=120
 ```
 
-ali-langengine-gemini
+alibaba-langengine-gemini
 ```properties
 # gemini api
 gemini_api_key=******
 gemini_api_timeout=120
 ```
 
-ali-langengine-hologres
+alibaba-langengine-hologres
 ```properties
 # hologres db
 hologres_datasource_endpoint=******
@@ -104,19 +104,19 @@ hologres_datasource_u=******
 hologres_datasource_p=******
 ```
 
-ali-langengine-huggingface
+alibaba-langengine-huggingface
 ```properties
 # huggingface api
 huggingface_api_key=******
 ```
 
-ali-langengine-milvus
+alibaba-langengine-milvus
 ```properties
 # milvus
 milvus_server_url=******
 ```
 
-ali-langengine-minimax
+alibaba-langengine-minimax
 ```properties
 #minimax api
 minimax_api_key=******
@@ -124,7 +124,7 @@ minimax_group_id=******
 minimax_api_timeout=120
 ```
 
-ali-langengine-moonshot
+alibaba-langengine-moonshot
 ```properties
 # moonshot api
 moonshot_server_url=https://api.moonshot.cn
@@ -133,14 +133,14 @@ moonshot_api_version=v1
 moonshot_server_timeout=120
 ```
 
-ali-langengine-msearch
+alibaba-langengine-msearch
 ```properties
 #msearch api
 msearch_api_key=******
 msearch_api_timeout=120
 ```
 
-ali-langengine-opensearch
+alibaba-langengine-opensearch
 ```properties
 # opensearch vector
 opensearch_datasource_instance_id=ha-cn-*****
@@ -149,7 +149,7 @@ opensearch_datasource_swift_server_root=http://*****
 opensearch_datasource_swift_topic=ha-cn-******
 ```
 
-ali-langengine-pinecone
+alibaba-langengine-pinecone
 ```properties
 # pinecone vector
 pinecone_api_key=******
@@ -157,7 +157,7 @@ pinecone_environment=us-west4-gcp-free
 pinecone_project_name=******
 ```
 
-ali-langengine-polardb
+alibaba-langengine-polardb
 ```properties
 # polardb postgres
 polardb_datasource_endpoint=******
@@ -166,7 +166,7 @@ polardb_datasource_u=******
 polardb_datasource_p=******
 ```
 
-ali-langengine-redis
+alibaba-langengine-redis
 ```properties
 # redis
 redis_host=r-******.redis.rds.aliyuncs.com
@@ -175,7 +175,7 @@ redis_p=******
 redis_session_expire_second=60
 ```
 
-ali-langengine-tair
+alibaba-langengine-tair
 ```properties
 # tair vector
 tair_host=r-******.redis.rds.aliyuncs.com
@@ -183,7 +183,7 @@ tair_port=6379
 tair_p=******
 ```
 
-ali-langengine-vertexai
+alibaba-langengine-vertexai
 ```properties
 # vertexai
 vertexai_server_url=https://us-central1-aiplatform.googleapis.com/
@@ -192,14 +192,14 @@ vertexai_project_id=******
 vertexai_api_timeout=120
 ```
 
-ali-langengine-xingchen
+alibaba-langengine-xingchen
 ```properties
 # xingchen
 xingchen_api_key=lm-******
 xingchen_api_timeout=120
 ```
 
-ali-langengine-xinghuo
+alibaba-langengine-xinghuo
 ```properties
 # xinghuo
 xinghuo_server_url=https://spark-api.xf-yun.com/v2.1/chat

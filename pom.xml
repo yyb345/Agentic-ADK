@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.alibaba</groupId>
-	<artifactId>ali-langengine</artifactId>
+	<artifactId>alibaba-langengine</artifactId>
 	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>ali-langengine</name>
-	<description>LangEngine is an AI application development framework written in Java.</description>
+	<name>alibaba-langengine</name>
+	<description>Alibaba LangEngine is an AI application development framework written in Java.</description>
 	<url>https://github.com/AIDC-AI/ali-langengine</url>
 
 	<scm>
@@ -55,37 +55,37 @@
 	</properties>
 
 	<modules>
-		<module>ali-langengine-core</module>
-		<module>ali-langengine-demo</module>
-		<module>ali-langengine-infrastructure/ali-langengine-docloader</module>
-		<module>ali-langengine-infrastructure/ali-langengine-tool</module>
-		<module>ali-langengine-infrastructure/ali-langengine-gpt</module>
-		<module>ali-langengine-community/ali-langengine-openai</module>
-		<module>ali-langengine-community/ali-langengine-azure</module>
-		<module>ali-langengine-community/ali-langengine-dashscope</module>
-		<module>ali-langengine-community/ali-langengine-gemini</module>
-		<module>ali-langengine-community/ali-langengine-vertexai</module>
-		<module>ali-langengine-community/ali-langengine-moonshot</module>
-		<module>ali-langengine-community/ali-langengine-minimax</module>
-		<module>ali-langengine-community/ali-langengine-duckdb</module>
-		<module>ali-langengine-community/ali-langengine-redis</module>
-		<module>ali-langengine-community/ali-langengine-hologres</module>
-		<module>ali-langengine-community/ali-langengine-adbpg</module>
-		<module>ali-langengine-community/ali-langengine-opensearch</module>
-		<module>ali-langengine-community/ali-langengine-polardb</module>
-		<module>ali-langengine-community/ali-langengine-tair</module>
-		<module>ali-langengine-community/ali-langengine-pinecone</module>
-		<module>ali-langengine-community/ali-langengine-milvus</module>
-		<module>ali-langengine-community/ali-langengine-chroma</module>
-		<module>ali-langengine-community/ali-langengine-djl</module>
-		<module>ali-langengine-community/ali-langengine-huggingface</module>
-		<module>ali-langengine-community/ali-langengine-sqlite</module>
-		<module>ali-langengine-community/ali-langengine-xingchen</module>
-		<module>ali-langengine-community/ali-langengine-xinghuo</module>
-		<module>ali-langengine-community/ali-langengine-msearch</module>
-		<module>ali-langengine-community/ali-langengine-autogen</module>
-		<module>ali-langengine-community/ali-langengine-metagpt</module>
-		<module>ali-langengine-community/ali-langengine-claude</module>
+		<module>alibaba-langengine-core</module>
+		<module>alibaba-langengine-demo</module>
+		<module>alibaba-langengine-infrastructure/alibaba-langengine-docloader</module>
+		<module>alibaba-langengine-infrastructure/alibaba-langengine-tool</module>
+		<module>alibaba-langengine-infrastructure/alibaba-langengine-gpt</module>
+		<module>alibaba-langengine-community/alibaba-langengine-openai</module>
+		<module>alibaba-langengine-community/alibaba-langengine-azure</module>
+		<module>alibaba-langengine-community/alibaba-langengine-dashscope</module>
+		<module>alibaba-langengine-community/alibaba-langengine-gemini</module>
+		<module>alibaba-langengine-community/alibaba-langengine-vertexai</module>
+		<module>alibaba-langengine-community/alibaba-langengine-moonshot</module>
+		<module>alibaba-langengine-community/alibaba-langengine-minimax</module>
+		<module>alibaba-langengine-community/alibaba-langengine-duckdb</module>
+		<module>alibaba-langengine-community/alibaba-langengine-redis</module>
+		<module>alibaba-langengine-community/alibaba-langengine-hologres</module>
+		<module>alibaba-langengine-community/alibaba-langengine-adbpg</module>
+		<module>alibaba-langengine-community/alibaba-langengine-opensearch</module>
+		<module>alibaba-langengine-community/alibaba-langengine-polardb</module>
+		<module>alibaba-langengine-community/alibaba-langengine-tair</module>
+		<module>alibaba-langengine-community/alibaba-langengine-pinecone</module>
+		<module>alibaba-langengine-community/alibaba-langengine-milvus</module>
+		<module>alibaba-langengine-community/alibaba-langengine-chroma</module>
+		<module>alibaba-langengine-community/alibaba-langengine-djl</module>
+		<module>alibaba-langengine-community/alibaba-langengine-huggingface</module>
+		<module>alibaba-langengine-community/alibaba-langengine-sqlite</module>
+		<module>alibaba-langengine-community/alibaba-langengine-xingchen</module>
+		<module>alibaba-langengine-community/alibaba-langengine-xinghuo</module>
+		<module>alibaba-langengine-community/alibaba-langengine-msearch</module>
+		<module>alibaba-langengine-community/alibaba-langengine-autogen</module>
+		<module>alibaba-langengine-community/alibaba-langengine-metagpt</module>
+		<module>alibaba-langengine-community/alibaba-langengine-claude</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
