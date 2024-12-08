@@ -20,6 +20,7 @@ import com.alibaba.langengine.core.agent.planexecute.ListStepContainer;
 import com.alibaba.langengine.core.agent.planexecute.Plan;
 import com.alibaba.langengine.core.agent.planexecute.Step;
 import com.alibaba.langengine.core.agent.planexecute.StepResponse;
+import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.demo.agent.tool.LLMMathTool;
 import com.alibaba.langengine.demo.agent.tool.SearchAPITool;
 import com.alibaba.langengine.core.messages.SystemMessage;
@@ -69,8 +70,9 @@ public class RunnablePlanAndExecuteTest extends BaseTest {
         ChatPromptTemplate plan_prompt = ChatPromptTemplate.fromMessages(messages);
 
         // model
-        ChatModelOpenAI model = new ChatModelOpenAI();
-        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+//        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
         RunnableInterface modelBinding =  model.bind(new HashMap<String, Object>() {{
             put("stop", Arrays.asList(new String[] { "<END_OF_PLAN>" }));
         }});

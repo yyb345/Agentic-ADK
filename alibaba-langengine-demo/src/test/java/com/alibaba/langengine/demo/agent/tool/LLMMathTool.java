@@ -36,15 +36,21 @@ public class LLMMathTool extends DefaultTool {
 
     @Override
     public ToolExecuteResult run(String toolInput) {
+        log.info("LLMMathTool toolInput: {}", toolInput);
+        toolInput = toolInput.replaceAll("\"", "");
         if(getFunc() != null) {
             Map<String, Object> inputs = new HashMap<>();
             inputs.put("question", toolInput);
             Map<String, Object> outputs = getFunc().apply(inputs);
-            return new ToolExecuteResult(outputs.get("answer").toString(), true);
+            String result = (String) outputs.get("answer");
+            log.info("LLMMathTool result: {}", result);
+            return new ToolExecuteResult(result, true);
         } else {
 //            throw new RuntimeException("LLMMathTool error.");
             toolInput = toolInput.replaceAll("\\^", "**");
             String result = PythonUtils.invokePythonCode(PythonCodeConstants.LLMMATH_PYTHON_CODE, toolInput);
+            log.info("LLMMathTool result: {}", result);
+//            result = "8";
             return new ToolExecuteResult("Answer: " + result);
         }
     }

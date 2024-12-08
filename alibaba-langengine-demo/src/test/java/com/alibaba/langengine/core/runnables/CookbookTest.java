@@ -28,6 +28,7 @@ import com.alibaba.langengine.core.outputparser.StrOutputParser;
 import com.alibaba.langengine.core.prompt.impl.*;
 import com.alibaba.langengine.core.runnables.tools.*;
 import com.alibaba.langengine.core.vectorstore.VectorStore;
+import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.gpt.nl2sql.db.SQLDatabase;
 import com.alibaba.langengine.gpt.nl2sql.db.SQLEngine;
 import com.alibaba.langengine.openai.model.ChatModelOpenAI;
@@ -45,9 +46,15 @@ public class CookbookTest extends BaseTest {
     //PromptTemplate + LLM
     @Test
     public void test_prompttemplate_llm() {
-        ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate("tell me a joke about {foo}");
+        // success
+        String question;
+//        question = "tell me a joke about {foo}";
+        question = "请说一个关于 {foo} 的笑话";
 
-        ChatModelOpenAI model = new ChatModelOpenAI();
+        ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate(question);
+
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         RunnableInterface chain = Runnable.sequence(prompt, model);
 
@@ -60,9 +67,16 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_attaching_stop_sequences() {
-        ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate("tell me a joke about {foo}");
+        // success
+        String question;
+//        question = "tell me a joke about {foo}";
+        question = "请说一个关于 {foo} 的笑话";
 
-        ChatModelOpenAI model = new ChatModelOpenAI();
+        ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate(question);
+
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
+
         RunnableInterface modelBinding =  model.bind(new HashMap<String, Object>() {{
             put("stop", Arrays.asList(new String[] { "\n" }));
         }});
@@ -78,9 +92,15 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_attaching_function_call_information() {
-        ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate("tell me a joke about {foo}");
+        // success
+        String question;
+//        question = "tell me a joke about {foo}";
+        question = "请说一个关于 {foo} 的笑话";
 
-        ChatModelOpenAI model = new ChatModelOpenAI();
+        ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate(question);
+
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         List<FunctionDefinition> functionDefinitionList = new ArrayList<>();
         FunctionDefinition functionDefinition = new FunctionDefinition();
@@ -125,7 +145,8 @@ public class CookbookTest extends BaseTest {
         ChatPromptTemplate prompt2 = ChatPromptTemplate.fromTemplate("What country is the city {city} in? respond in {language}");
 
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         //outputParser
         StrOutputParser outputParser = new StrOutputParser();
@@ -148,7 +169,8 @@ public class CookbookTest extends BaseTest {
     @Test
     public void test_four_chains() {
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         //prompt1
         ChatPromptTemplate prompt1 = ChatPromptTemplate.fromTemplate("generate a {attribute} color. Return the name of the color and nothing else:");
@@ -202,7 +224,8 @@ public class CookbookTest extends BaseTest {
     @Test
     public void test_branching_and_merging() {
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         RunnableInterface planner = Runnable.sequence(
                 ChatPromptTemplate.fromTemplate("Generate an argument about: {input}, please use chinese"),
@@ -271,7 +294,8 @@ public class CookbookTest extends BaseTest {
         retriever.setRecommendCount(1);
 
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         ChatPromptTemplate CONDENSE_QUESTION_PROMPT = ChatPromptTemplate.fromTemplate("Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, in its original language.\n" +
                 "\n" +
@@ -402,7 +426,8 @@ public class CookbookTest extends BaseTest {
 
         BaseOutputParser outputParser = new StrOutputParser();
 
-        ChatModelOpenAI model = new ChatModelOpenAI();
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         RunnableHashMap input = new RunnableHashMap() {{
             put("history", new RunnableLambda(e -> memory.loadMemoryVariables()));
@@ -458,7 +483,8 @@ public class CookbookTest extends BaseTest {
 
         BaseOutputParser outputParser = new StrOutputParser();
 
-        ChatModelOpenAI model = new ChatModelOpenAI();
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         RunnableInterface chain = Runnable.sequence(prompt, model, outputParser);
 

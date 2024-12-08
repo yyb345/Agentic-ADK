@@ -33,6 +33,7 @@ import com.alibaba.langengine.dashscope.model.service.DashScopeService;
 import io.reactivex.Flowable;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.Duration;
@@ -44,7 +45,7 @@ import static com.alibaba.langengine.dashscope.DashScopeConfiguration.*;
 
 /**
  * DashScope ChatModel大模型，用到chatMessage方式
- * https://help.aliyun.com/zh/dashscope/developer-reference/tongyi-qianwen-vl-plus-api
+ * https://help.aliyun.com/zh/dashscope/developer-reference/qwen-api
  *
  * @author xiaoxuan.lp
  */
@@ -110,6 +111,9 @@ public class DashScopeChatModel extends BaseChatModel<CompletionRequest> {
         }
         if (dataInspection) {
             parameters.put("dataInspection", "enable");
+        }
+        if(!CollectionUtils.isEmpty(functions)) {
+            parameters.put("functions", functions);
         }
         parameters.put("result_format", "message");
         if (extraAttributes!=null && Objects.nonNull(extraAttributes.get("functions"))) {

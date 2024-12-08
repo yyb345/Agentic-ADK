@@ -26,6 +26,7 @@ import com.alibaba.langengine.core.runnables.Runnable;
 import com.alibaba.langengine.core.runnables.*;
 import com.alibaba.langengine.core.runnables.tools.*;
 import com.alibaba.langengine.core.tool.BaseTool;
+import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.openai.model.ChatModelOpenAI;
 import com.alibaba.langengine.openai.model.OpenAIModelConstants;
 import org.junit.jupiter.api.Test;
@@ -54,9 +55,11 @@ public class RunnableFunctionCallAgentTest extends BaseTest {
     @Test
     public void test_with_qwen_function_call() {
         // model
-        ChatModelOpenAI model = new ChatModelOpenAI();
-        model.setModel(OpenAIModelConstants.GPT_35_TURBO);
-        model.setTemperature(0d);
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+//        model.setModel(OpenAIModelConstants.GPT_35_TURBO);
+//        model.setTemperature(0d);
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
+
 
         // prompt
         List<BaseMessage> messages = new ArrayList<>();

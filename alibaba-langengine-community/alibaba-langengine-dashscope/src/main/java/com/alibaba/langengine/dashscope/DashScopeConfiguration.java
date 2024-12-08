@@ -34,5 +34,10 @@ public class DashScopeConfiguration {
      */
     public static String DASHSCOPE_SERVER_URL = WorkPropertiesUtils.get("dashscope_server_url");
 
+    /**
+     * dashscope openai compatible server url
+     */
+    public static String DASHSCOPE_OPENAI_COMPATIBLE_SERVER_URL = WorkPropertiesUtils.get("dashscope_openai_compatible_server_url");
+
     public static String DASHSCOPE_API_TIMEOUT = WorkPropertiesUtils.get("dashscope_api_timeout", 120l);
 }

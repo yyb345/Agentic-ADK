@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 public class RunnableRetry extends RunnableBinding {
 
     private int maxAttemptNumber = 3;
+    private long intervalTime = 10;
 
     @Override
     public Object invoke(Object input, RunnableConfig config) {
@@ -56,9 +57,9 @@ public class RunnableRetry extends RunnableBinding {
             if(count >= maxAttemptNumber) {
                 throw new RuntimeException("last time RunnableRetry invoke error", e);
             }
-            // 停顿10毫秒
+            // 停顿时间
             try {
-                Thread.sleep(10);
+                Thread.sleep(intervalTime);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
