@@ -28,6 +28,7 @@ import com.alibaba.langengine.core.runnables.*;
 import com.alibaba.langengine.core.runnables.Runnable;
 import com.alibaba.langengine.core.runnables.tools.*;
 import com.alibaba.langengine.core.tool.BaseTool;
+import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.openai.model.ChatModelOpenAI;
 import com.alibaba.langengine.openai.model.OpenAIModelConstants;
 import org.junit.jupiter.api.Test;
@@ -38,9 +39,11 @@ public class RunnableStructuredChatAgentTest extends BaseTest {
 
     @Test
     public void test_with_xml() {
+        // success
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
-        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+//        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         //chat_history
         List<BaseMessage> messages = new ArrayList<>();

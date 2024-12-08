@@ -28,7 +28,7 @@ import java.util.List;
 public class ApiLogSimpleTool extends DefaultTool {
 
     public ApiLogSimpleTool() {
-        setName("api log tool");
+        setName("apiLogSimpleTool");
         setDescription("Search API log about current events.");
     }
 

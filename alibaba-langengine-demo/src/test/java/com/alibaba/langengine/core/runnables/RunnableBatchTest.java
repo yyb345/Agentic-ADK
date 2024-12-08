@@ -35,6 +35,7 @@ public class RunnableBatchTest {
 
     @Test
     public void test_RunnableWithFallbacks_batch() {
+        // success
         List<Object> messages = new ArrayList<>();
         SystemMessagePromptTemplate systemMessagePromptTemplate = new SystemMessagePromptTemplate();
         systemMessagePromptTemplate.setPrompt(new PromptTemplate("You're a nice assistant who always includes a compliment in your response"));
@@ -85,6 +86,7 @@ public class RunnableBatchTest {
 
     @Test
     public void test_RunnableWithFallbacks_batchAsync() throws ExecutionException, InterruptedException {
+        // success
         List<Object> messages = new ArrayList<>();
         SystemMessagePromptTemplate systemMessagePromptTemplate = new SystemMessagePromptTemplate();
         systemMessagePromptTemplate.setPrompt(new PromptTemplate("You're a nice assistant who always includes a compliment in your response"));

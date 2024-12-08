@@ -30,6 +30,7 @@ import com.alibaba.langengine.core.runnables.tools.TmpCommonTool;
 import com.alibaba.langengine.core.vectorstore.VectorStore;
 import com.alibaba.langengine.core.vectorstore.memory.InMemoryDB;
 import com.alibaba.langengine.dashscope.model.DashScopeLLM;
+import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.openai.embeddings.OpenAIEmbeddings;
 import com.alibaba.langengine.openai.model.ChatModelOpenAI;
 import org.junit.jupiter.api.Test;
@@ -307,6 +308,7 @@ public class RunnableTest {
 
     @Test
     public void test_invoke_5() {
+        // success
         VectorStore vectorStore = initVectorStore();
 
         //retriever
@@ -325,7 +327,8 @@ public class RunnableTest {
                 "Question: {question}");
 
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         //input
         RunnableHashMap question = new RunnableHashMap() {{
@@ -362,6 +365,7 @@ public class RunnableTest {
 
     @Test
     public void test_tool() {
+        // success
         Map<String, Object> schemaMap =new HashMap<>();
         schemaMap.put("city", "省/市/区县名称，可以识别多个城市");
         TmpCommonTool realTimeCongestIdxTool = new TmpCommonTool("realTimeCongestIdxTool","用于查询省、市、区县的拥堵指数或者速度,拥堵指数越大，代表该城市越拥堵",schemaMap);

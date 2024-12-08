@@ -138,6 +138,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_two_chains() {
+        // success
         //prompt1
         ChatPromptTemplate prompt1 = ChatPromptTemplate.fromTemplate("What is the city {person} is from?");
 
@@ -168,6 +169,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_four_chains() {
+        // success
         //model
 //        ChatModelOpenAI model = new ChatModelOpenAI();
         DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
@@ -223,6 +225,7 @@ public class CookbookTest extends BaseTest {
      */
     @Test
     public void test_branching_and_merging() {
+        // success
         //model
 //        ChatModelOpenAI model = new ChatModelOpenAI();
         DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
@@ -289,6 +292,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_conversational_retrieval_chain() {
+        // success
         VectorStore vectorStore = initVectorStore();
         BaseRetriever retriever = vectorStore.asRetriever();
         retriever.setRecommendCount(1);
@@ -419,6 +423,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_Memory() {
+        // success
         ConversationBufferMemory memory = new ConversationBufferMemory();
         memory.setReturnMessages(true);
 
@@ -471,6 +476,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_RunnableBranch() {
+        // success
         ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate("Given the user question below, classify it as either being about `LangChain`, `OpenAI`, or `Other`.\n" +
                 "\n" +
                 "Do not respond with more than one word.\n" +
@@ -553,6 +559,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_RunnableWithFallbacks() {
+        // success
         List<Object> messages = new ArrayList<>();
         SystemMessagePromptTemplate systemMessagePromptTemplate = new SystemMessagePromptTemplate();
         systemMessagePromptTemplate.setPrompt(new PromptTemplate("You're a nice assistant who always includes a compliment in your response"));
@@ -594,6 +601,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_adding_moderation() {
+        // success
         OpenAIModerationChain moderate = new OpenAIModerationChain();
 
         ChatModelOpenAI model = new ChatModelOpenAI();
@@ -644,6 +652,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_RunnableEach() {
+        // success
         ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate("Tell me a short joke about {topic}");
 
         ChatModelOpenAI model = new ChatModelOpenAI();
@@ -674,6 +683,7 @@ public class CookbookTest extends BaseTest {
 
     @Test
     public void test_RunnableRetry() {
+        // success
         ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate("tell me a joke about {foo}");
 
         //badModel

@@ -16,6 +16,7 @@
 package com.alibaba.langengine.core.chain.llmbash;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.openai.model.ChatOpenAI;
 import com.alibaba.langengine.openai.model.OpenAIModelConstants;
 import org.junit.jupiter.api.Test;
@@ -28,9 +29,10 @@ public class LLMBashChainTest {
     @Test
     public void test_run() {
         // success
-        ChatOpenAI llm = new ChatOpenAI();
-        llm.setModel(OpenAIModelConstants.GPT_4_TURBO);
-        llm.setTemperature(0d);
+//        ChatOpenAI llm = new ChatOpenAI();
+//        llm.setModel(OpenAIModelConstants.GPT_4_TURBO);
+//        llm.setTemperature(0d);
+        DashScopeOpenAIChatModel llm = new DashScopeOpenAIChatModel();
 
         LLMBashChain llmBashChain = LLMBashChain.fromLlm(llm);
         llmBashChain.setWorkingDirectoryPath("/Users/xiaoxuan.lp/works/sources");

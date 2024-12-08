@@ -34,6 +34,7 @@ public class RunnableInvokeAsyncTest {
 
     @Test
     public void test_RunnableWithFallbacks_invokeAsync() throws ExecutionException, InterruptedException {
+        // success
         List<Object> messages = new ArrayList<>();
         SystemMessagePromptTemplate systemMessagePromptTemplate = new SystemMessagePromptTemplate();
         systemMessagePromptTemplate.setPrompt(new PromptTemplate("You're a nice assistant who always includes a compliment in your response"));

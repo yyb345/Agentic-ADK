@@ -54,6 +54,7 @@ public class RunnableFunctionCallAgentTest extends BaseTest {
 
     @Test
     public void test_with_qwen_function_call() {
+        // success
         // model
 //        ChatModelOpenAI model = new ChatModelOpenAI();
 //        model.setModel(OpenAIModelConstants.GPT_35_TURBO);

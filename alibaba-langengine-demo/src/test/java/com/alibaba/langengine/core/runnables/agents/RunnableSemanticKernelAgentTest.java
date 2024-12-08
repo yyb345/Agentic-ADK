@@ -21,6 +21,7 @@ import com.alibaba.langengine.core.agent.semantickernel.planning.BasicPlannerOut
 import com.alibaba.langengine.core.agent.semantickernel.planning.SequentialPlannerOutputParser;
 import com.alibaba.langengine.core.agent.semantickernel.planning.StepwisePlannerOutputParser;
 import com.alibaba.langengine.core.agent.semantickernel.skill.SemanticKernelSkill;
+import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.demo.agent.skills.MathAddSkill;
 import com.alibaba.langengine.demo.agent.skills.WriterBrainstormSkill;
 import com.alibaba.langengine.demo.agent.skills.WriterTranslateSkill;
@@ -40,9 +41,12 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
 
     @Test
     public void test_BasicPlanner() {
+        // success
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
-        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+//        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
+
         RunnableInterface modelBinding =  model.bind(new HashMap<String, Object>() {{
             put("stop", Arrays.asList(new String[] { "\nObservation:" }));
         }});
@@ -56,7 +60,7 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
         tools.add(writerTranslateSkill);
         for (BaseTool tool : tools) {
             if(tool instanceof StructuredTool) {
-                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
                 toolMap.put(skFunction, tool);
             }
         }
@@ -186,9 +190,12 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
 
     @Test
     public void test_SequentialPlanner() {
+        // success
         //model
         ChatModelOpenAI model = new ChatModelOpenAI();
         model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+//        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
+
         RunnableInterface modelBinding =  model.bind(new HashMap<String, Object>() {{
             put("stop", Arrays.asList(new String[] { "\n<!-- END -->" }));
         }});
@@ -202,7 +209,7 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
         tools.add(writerTranslateSkill);
         for (BaseTool tool : tools) {
             if(tool instanceof StructuredTool) {
-                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
                 toolMap.put(skFunction, tool);
             }
         }
@@ -251,7 +258,7 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
                 "<function.CallFunction input=\"$OTHER_OUTPUT[1]\"/>\n" +
                 "\n" +
                 "Here is a valid example of how to call a function \"_Function_.Name\" with a single input and save its output:\n" +
-                "<function._Function_.Name input=\"this is my input\" setContextVariable=\"SOME_KEY\"/>\n" +
+                "<function._Function__Name input=\"this is my input\" setContextVariable=\"SOME_KEY\"/>\n" +
                 "\n" +
                 "Here is a valid example of how to call a function \"FunctionName2\" with a single input and return its output as part of the plan result:\n" +
                 "<function.FunctionName2 input=\"Hello $INPUT\" appendToResult=\"RESULT__FINAL_ANSWER\"/>\n" +
@@ -292,9 +299,12 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
 
     @Test
     public void test_StepwisePlanner() {
+        // success
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
-        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+//        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
+
         RunnableInterface modelBinding =  model.bind(new HashMap<String, Object>() {{
             put("stop", Arrays.asList(new String[] { "\n[OBSERVATION]" }));
         }});
@@ -308,7 +318,7 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
         tools.add(writerTranslateSkill);
         for (BaseTool tool : tools) {
             if(tool instanceof SemanticKernelSkill) {
-                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
                 toolMap.put(skFunction, tool);
             }
         }
@@ -397,9 +407,12 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
 
     @Test
     public void test_ActionPlanner() {
+        // success
         //model
-        ChatModelOpenAI model = new ChatModelOpenAI();
-        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+//        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
+
         RunnableInterface modelBinding =  model.bind(new HashMap<String, Object>() {{
             put("stop", Arrays.asList(new String[] { "#END-OF-PLAN" }));
         }});
@@ -411,7 +424,7 @@ public class RunnableSemanticKernelAgentTest extends BaseTest {
         tools.add(mathAddSkill);
         for (BaseTool tool : tools) {
             if(tool instanceof StructuredTool) {
-                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
                 toolMap.put(skFunction, tool);
             }
         }

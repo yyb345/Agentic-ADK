@@ -17,6 +17,7 @@ package com.alibaba.langengine.core.runnables;
 
 import com.alibaba.langengine.core.messages.BaseMessage;
 import com.alibaba.langengine.core.prompt.impl.ChatPromptTemplate;
+import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.openai.model.ChatModelOpenAI;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,9 @@ public class RunnableStreamTest {
 
     @Test
     public void test_run() {
-        ChatModelOpenAI model = new ChatModelOpenAI();
+        // success
+//        ChatModelOpenAI model = new ChatModelOpenAI();
+        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
 
         ChatPromptTemplate prompt = ChatPromptTemplate.fromTemplate("你是谁？");
         RunnableHashMap input = new RunnableHashMap() {{

@@ -21,6 +21,7 @@ import com.alibaba.langengine.core.prompt.impl.PromptTemplate;
 import com.alibaba.langengine.core.tool.StructuredParameter;
 import com.alibaba.langengine.core.tool.StructuredSchema;
 import com.alibaba.langengine.openai.model.ChatModelOpenAI;
+import com.alibaba.langengine.openai.model.OpenAIModelConstants;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +46,7 @@ public class WriterTranslateSkill extends SemanticKernelSkill {
         setStructuredSchema(new WriterTranslateSchema());
 
         ChatModelOpenAI llm = new ChatModelOpenAI();
+        llm.setModel(OpenAIModelConstants.GPT_4_TURBO);
         PromptTemplate promptTemplate = new PromptTemplate(PROMPT, Arrays.asList(new String[] { "language", "input" }));
 
         LLMChain llmChain = new LLMChain();

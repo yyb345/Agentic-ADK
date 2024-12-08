@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiSolutionTool extends DefaultTool {
 
     public ApiSolutionTool() {
-        setName("api solve solution tool");
+        setName("apiSolutionTool");
         setDescription("Search API solve solution about current events.");
     }
 
