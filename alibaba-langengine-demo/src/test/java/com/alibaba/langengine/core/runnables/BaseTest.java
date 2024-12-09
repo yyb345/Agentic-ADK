@@ -165,7 +165,7 @@ public class BaseTest {
         Map<String, BaseTool> toolMap = new HashMap<>();
         for (BaseTool tool : tools) {
             if(tool instanceof StructuredTool) {
-                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
                 toolMap.put(skFunction, tool);
 
                 StructuredTool structuredTool = (StructuredTool)tool;
@@ -181,7 +181,7 @@ public class BaseTest {
         Map<String, BaseTool> toolMap = new HashMap<>();
         for (BaseTool tool : tools) {
             if(tool instanceof StructuredTool) {
-                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
                 toolMap.put(skFunction, tool);
 
                 StructuredTool structuredTool = (StructuredTool)tool;
@@ -197,7 +197,7 @@ public class BaseTest {
         Map<String, BaseTool> toolMap = new HashMap<>();
         for (BaseTool tool : tools) {
             if(tool instanceof StructuredTool) {
-                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
                 toolMap.put(skFunction, tool);
 
                 StructuredTool structuredTool = (StructuredTool)tool;
@@ -213,7 +213,7 @@ public class BaseTest {
         Map<String, BaseTool> toolMap = new HashMap<>();
         for (BaseTool tool : tools) {
             if(tool instanceof StructuredTool) {
-                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
                 toolMap.put(skFunction, tool);
 
                 StructuredTool structuredTool = (StructuredTool)tool;

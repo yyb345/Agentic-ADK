@@ -21,7 +21,6 @@ import com.alibaba.langengine.core.prompt.impl.ChatPromptTemplate;
 import com.alibaba.langengine.core.runnables.*;
 import com.alibaba.langengine.core.runnables.Runnable;
 import com.alibaba.langengine.core.tool.BaseTool;
-import com.alibaba.langengine.dashscope.model.DashScopeOpenAIChatModel;
 import com.alibaba.langengine.openai.model.ChatModelOpenAI;
 import com.alibaba.langengine.openai.model.OpenAIModelConstants;
 import com.alibaba.langengine.tool.google.SerpapiTool;
@@ -34,9 +33,8 @@ public class RunnableSelfAskWithSearchAgentTest extends BaseTest {
     @Test
     public void test_run() {
         //model
-//        ChatModelOpenAI model = new ChatModelOpenAI();
-//        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
-        DashScopeOpenAIChatModel model = new DashScopeOpenAIChatModel();
+        ChatModelOpenAI model = new ChatModelOpenAI();
+        model.setModel(OpenAIModelConstants.GPT_4_TURBO);
 
         RunnableInterface modelBinding = model.bind(new RunnableHashMap() {{
             put("stop", Arrays.asList(new String[] { "Intermediate answer: " }));

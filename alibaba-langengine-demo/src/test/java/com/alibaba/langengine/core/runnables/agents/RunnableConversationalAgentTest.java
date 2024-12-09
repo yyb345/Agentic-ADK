@@ -35,7 +35,6 @@ public class RunnableConversationalAgentTest extends BaseTest {
 
     @Test
     public void test_run() {
-        // success
         ConversationBufferMemory memory = new ConversationBufferMemory();
         memory.setReturnMessages(true);
 

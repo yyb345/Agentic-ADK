@@ -25,8 +25,6 @@ import com.alibaba.langengine.core.util.XmlUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultAttribute;
@@ -118,8 +116,8 @@ public class SequentialPlannerOutputParser extends AgentOutputParser<AgentNextSt
                         Map<String, Object> allVaribles = new HashMap<>();
                         allVaribles.putAll(contextVariables);
                         allVaribles.putAll(appendToResultValues);
-                        VelocityContext velocityContext = new VelocityContext(allVaribles);
-                        Velocity.evaluate(velocityContext, writer, tplName, content);
+//                        VelocityContext velocityContext = new VelocityContext(allVaribles);
+//                        Velocity.evaluate(velocityContext, writer, tplName, content);
                         String output = writer.getBuffer().toString();
 
                         context.put(entry.getKey(), output);

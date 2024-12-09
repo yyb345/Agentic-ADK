@@ -41,7 +41,7 @@ public abstract class StructuredTool<T extends StructuredSchema> extends Default
     }
 
     public String formatSemantickernelBasicPrompt(String inputParams) {
-        String skFunction = String.format("%s_%s", getName(), getFunctionName());
+        String skFunction = String.format("%s.%s", getName(), getFunctionName());
         String description = String.format("description: %s", getDescription());
         StringBuilder builder = new StringBuilder();
         builder.append(skFunction + "\n");
@@ -63,7 +63,7 @@ public abstract class StructuredTool<T extends StructuredSchema> extends Default
     }
 
     public String formatSemantickernelActionPrompt() {
-        String skFunction = String.format("%s_%s", getName(), getFunctionName());
+        String skFunction = String.format("%s.%s", getName(), getFunctionName());
         String description = getDescription();
 
         StringBuilder builder = new StringBuilder();
@@ -81,7 +81,7 @@ public abstract class StructuredTool<T extends StructuredSchema> extends Default
     }
 
     public String formatSemantickernelStepwisePrompt() {
-        String skFunction = String.format("%s_%s", getName(), getFunctionName());
+        String skFunction = String.format("%s.%s", getName(), getFunctionName());
         String description = getDescription();
 
         StringBuilder builder = new StringBuilder();

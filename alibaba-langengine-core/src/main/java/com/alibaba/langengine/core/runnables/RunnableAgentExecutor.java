@@ -100,7 +100,7 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
         this.toolPromptTransform = toolPromptTransform;
         for (BaseTool tool : tools) {
             if(tool instanceof SemanticKernelSkill) {
-                String skFunction = String.format("%s_%s", tool.getName(), tool.getFunctionName());
+                String skFunction = String.format("%s.%s", tool.getName(), tool.getFunctionName());
                 nameToToolMap.put(skFunction, tool);
             } else {
                 nameToToolMap.put(tool.getName(), tool);
