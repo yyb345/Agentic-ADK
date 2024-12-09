@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:smart="http://smartengine.org/schema/process">
+    <process  id="towchat" isExecutable="true" version="1">
+        <startEvent id="start" name="开始">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="inputParameters" value="[{}]"/>
+                    <smart:value name="templateType" value="start"/>
+                </smart:properties>
+            </extensionElements>
+        </startEvent>
+        <endEvent id="end" name="结束">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="finalOutputParameters" value="[{&quot;message&quot;:&quot;ok&quot;}]"/>
+                    <smart:value name="templateType" value="end"/>
+                </smart:properties>
+            </extensionElements>
+        </endEvent>
+        <serviceTask id="entry_agent" name="入口代理" smart:class="com.alibaba.langengine.multiagent.delegation.EntryAgentDelegation">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="agentStrategy" value="network"/>
+                    <smart:value name="maxRound" value="12"/>
+                    <smart:value name="llm" value="gpt-4o"/>
+                    <smart:value name="temperature" value="0.5"/>
+                    <smart:value name="subAgents" value="agent_with_number,agent_guess_number" />
+                    <smart:value name="agentType" value="none"/><!-- llm/agent -->
+<!--                    <smart:value name="stream" value="1"/>-->
+<!--                    <smart:value name="hasHistory" value="1"/>-->
+<!--                    <smart:value name="systemPrompt" value="hi"/>-->
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <serviceTask id="agent_with_number" name="agent_with_number" smart:class="com.alibaba.langengine.multiagent.delegation.ExecutionAgentDelegation">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="refEntryAgent" value="entry_agent" />
+                    <smart:value name="llm" value="gpt-4o"/>
+                    <smart:value name="temperature" value="0.5"/>
+                    <smart:value name="agentType" value="llm"/>
+                    <smart:value name="systemPrompt" value="You are playing a game of guess-my-number. You have the number 53 in your mind." />
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <serviceTask id="agent_guess_number" name="agent_guess_number" smart:class="com.alibaba.langengine.multiagent.delegation.ExecutionAgentDelegation">
+            <extensionElements>
+                <smart:properties>
+                    <smart:value name="refEntryAgent" value="entry_agent" />
+                    <smart:value name="llm" value="gpt-4o"/>
+                    <smart:value name="temperature" value="0.5"/>
+                    <smart:value name="agentType" value="llm"/>
+                    <smart:value name="systemPrompt" value="I have a number in my mind, and you will try to guess it." />
+                </smart:properties>
+            </extensionElements>
+        </serviceTask>
+        <sequenceFlow id="xy-edge__start-entry_agent" sourceRef="start" targetRef="entry_agent"/>
+    </process>
+</definitions>
