@@ -12,11 +12,11 @@ The main application scenarios of alibaba-langengine include personal assistants
 
 **Related Code**
 
-alibaba-langengine-core: The most essential AI application framework engine module.
+ali-langengine-core: The most essential AI application framework engine module.
 
-alibaba-langengine-infrastructure: The infrastructure module of the AI application framework.
+ali-langengine-infrastructure: The infrastructure module of the AI application framework.
 
-alibaba-langengine-community: Community open-source co-construction module.
+ali-langengine-community: Community open-source co-construction module.
 
 alibaba-langengine-demo: Related example module.
 

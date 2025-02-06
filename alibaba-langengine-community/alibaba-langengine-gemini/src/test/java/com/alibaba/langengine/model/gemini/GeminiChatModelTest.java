@@ -32,6 +32,11 @@ import java.util.Map;
 public class GeminiChatModelTest {
 
     @Test
+    public void test_predict() {
+        GeminiChatModel llm = new GeminiChatModel();
+        System.out.println(llm.predict("你是谁？"));
+    }
+    @Test
     public void test_predict_gemini_pro_vision() {
         GeminiChatModel llm = new GeminiChatModel();
         llm.setModel("gemini-pro-vision");

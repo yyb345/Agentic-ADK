@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.alibaba</groupId>
-	<artifactId>alibaba-langengine</artifactId>
+	<artifactId>ali-langengine</artifactId>
 	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>alibaba-langengine</name>
+	<name>ali-langengine</name>
 	<description>Alibaba LangEngine is an AI application development framework written in Java.</description>
 	<url>https://github.com/AIDC-AI/ali-langengine</url>
 
@@ -60,6 +60,7 @@
 		<module>alibaba-langengine-infrastructure/alibaba-langengine-docloader</module>
 		<module>alibaba-langengine-infrastructure/alibaba-langengine-tool</module>
 		<module>alibaba-langengine-infrastructure/alibaba-langengine-gpt</module>
+		<module>alibaba-langengine-infrastructure/alibaba-langengine-mcp</module>
 		<module>alibaba-langengine-community/alibaba-langengine-openai</module>
 		<module>alibaba-langengine-community/alibaba-langengine-azure</module>
 		<module>alibaba-langengine-community/alibaba-langengine-dashscope</module>
@@ -86,6 +87,7 @@
 		<module>alibaba-langengine-community/alibaba-langengine-autogen</module>
 		<module>alibaba-langengine-community/alibaba-langengine-metagpt</module>
 		<module>alibaba-langengine-community/alibaba-langengine-claude</module>
+		<module>alibaba-langengine-community/alibaba-langengine-lindorm</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>

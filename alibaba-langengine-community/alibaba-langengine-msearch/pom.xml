@@ -5,17 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.alibaba</groupId>
-        <artifactId>alibaba-langengine</artifactId>
+        <artifactId>ali-langengine</artifactId>
         <version>1.2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>alibaba-langengine-msearch</artifactId>
+    <artifactId>ali-langengine-msearch</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>alibaba-langengine-core</artifactId>
+            <artifactId>ali-langengine-core</artifactId>
             <version>1.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
