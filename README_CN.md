@@ -12,7 +12,7 @@
 </div>
 </h4>
 
-**Alibaba langengine**
+**[Alibaba langengine](https://github.com/AIDC-AI/ali-langengine)**
 
 阿里巴巴langengine是一个基于Java的AI应用开发框架。它赋予LLM两大核心能力：
 

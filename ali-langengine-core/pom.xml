@@ -11,6 +11,12 @@
     </parent>
 
     <artifactId>ali-langengine-core</artifactId>
+    <url>https://github.com/AIDC-AI/ali-langengine</url>
+
+    <scm>
+        <url>https://github.com/AIDC-AI/ali-langengine</url>
+        <connection>scm:git:https://git@github.com/AIDC-AI/ali-langengine.git</connection>
+    </scm>
 
     <dependencies>
         <dependency>

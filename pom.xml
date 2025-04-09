@@ -16,27 +16,33 @@
 		<connection>scm:git:https://git@github.com/AIDC-AI/ali-langengine.git</connection>
 	</scm>
 
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<url>http://mvnrepo.alibaba-inc.com/mvn/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<url>http://mvnrepo.alibaba-inc.com/mvn/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
+	<licenses>
+		<license>
+			<name>Apache 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-<!--	<distributionManagement>-->
-<!--		<repository>-->
-<!--			<id>ossrh</id>-->
-<!--			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--		</repository>-->
-<!--		<snapshotRepository>-->
-<!--			<id>ossrh</id>-->
-<!--			<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-<!--		</snapshotRepository>-->
-<!--	</distributionManagement>-->
+	<developers>
+		<developer>
+			<id>sunleepy</id>
+			<name>sunleepy</name>
+			<email>sunleepy@gmail.com</email>
+			<organizationUrl>https://alibaba.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
@@ -52,6 +58,8 @@
 		<!-- overridden by submodule that need skip deploy -->
 		<maven.deploy.skip>false</maven.deploy.skip>
 		<root.basedir>${project.basedir}</root.basedir>
+		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+		<flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
 	</properties>
 
 	<modules>
@@ -72,9 +80,7 @@
 		<module>ali-langengine-community/ali-langengine-redis</module>
 		<module>ali-langengine-community/ali-langengine-hologres</module>
 		<module>ali-langengine-community/ali-langengine-adbpg</module>
-		<module>ali-langengine-community/ali-langengine-opensearch</module>
 		<module>ali-langengine-community/ali-langengine-polardb</module>
-		<module>ali-langengine-community/ali-langengine-tair</module>
 		<module>ali-langengine-community/ali-langengine-pinecone</module>
 		<module>ali-langengine-community/ali-langengine-milvus</module>
 		<module>ali-langengine-community/ali-langengine-chroma</module>
@@ -91,6 +97,9 @@
 		<module>ali-langengine-community/ali-langengine-deepseek</module>
 		<module>ali-langengine-community/ali-langengine-openmanus</module>
 		<module>ali-langengine-community/ali-langengine-tablestore</module>
+
+<!--		<module>ali-langengine-community/ali-langengine-opensearch</module>-->
+<!--		<module>ali-langengine-community/ali-langengine-tair</module>-->
 	</modules>
 	<dependencyManagement>
 		<dependencies>
@@ -274,19 +283,9 @@
 				<artifactId>log4j</artifactId>
 				<version>99.0-does-not-exist</version>
 			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-to-slf4j</artifactId>
-				<version>999-not-exist-SNAPSHOT</version>
-			</dependency>
 <!--			<dependency>-->
 <!--				<groupId>org.apache.logging.log4j</groupId>-->
-<!--				<artifactId>log4j-api</artifactId>-->
-<!--				<version>99.0-does-not-exist</version>-->
-<!--			</dependency>-->
-<!--			<dependency>-->
-<!--				<groupId>org.slf4j</groupId>-->
-<!--				<artifactId>slf4j-simple</artifactId>-->
+<!--				<artifactId>log4j-to-slf4j</artifactId>-->
 <!--				<version>999-not-exist</version>-->
 <!--			</dependency>-->
 			<!-- log4j排除 end -->
@@ -355,18 +354,98 @@
 	</dependencies>
 
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>attach-javadocs</id>-->
+<!--						<goals>-->
+<!--							<goal>jar</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>${flatten-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+						<configuration>
+							<updatePomFile>true</updatePomFile>
+							<flattenMode>ossrh</flattenMode>
+							<pomElements>
+								<distributionManagement>remove</distributionManagement>
+								<dependencyManagement>remove</dependencyManagement>
+								<repositories>remove</repositories>
+								<scm>keep</scm>
+								<url>keep</url>
+								<organization>resolve</organization>
+							</pomElements>
+						</configuration>
+					</execution>
+					<execution>
+						<id>clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.sonatype.central</groupId>
-					<artifactId>central-publishing-maven-plugin</artifactId>
-					<version>0.7.0</version>
-					<extensions>true</extensions>
-					<configuration>
-						<publishingServerId>central</publishingServerId>
-					</configuration>
-				</plugin>
-
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
@@ -377,6 +456,7 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven-surefire-plugin.version}</version>
 				</plugin>
+
 <!--				<plugin>-->
 <!--					<groupId>com.mycila</groupId>-->
 <!--					<artifactId>license-maven-plugin</artifactId>-->
@@ -405,5 +485,47 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>javadoc</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${maven-javadoc-plugin.version}</version>
+						<configuration>
+							<excludePackageNames>
+								com.alibaba.langengine.*
+							</excludePackageNames>
+							<detectJavaApiLink>false</detectJavaApiLink>
+							<doclint>none</doclint>
+							<quiet>true</quiet>
+						</configuration>
+						<executions>
+							<execution>
+								<id>generate-javadocs</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>generate-aggregate-javadocs</id>
+								<phase>package</phase>
+								<goals>
+									<goal>aggregate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
