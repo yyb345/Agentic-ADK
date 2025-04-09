@@ -56,6 +56,11 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
+            <artifactId>ali-langengine-gpt</artifactId>
+            <version>1.2.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-duckdb</artifactId>
             <version>1.2.3-SNAPSHOT</version>
             <scope>test</scope>
@@ -69,11 +74,6 @@
         </dependency>
         <!-- jdbc end -->
 
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-http</artifactId>
-            <version>5.8.21</version>
-        </dependency>
     </dependencies>
 
     <build>

@@ -25,6 +25,7 @@ import com.alibaba.langengine.core.util.XmlUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultAttribute;
@@ -75,7 +76,7 @@ public class SequentialPlannerOutputParser extends AgentOutputParser<AgentNextSt
 
                     Map<String, Object> input = new HashMap<>();
 
-                    List<Object> attributes = routeElement.attributes();
+                    List<Attribute> attributes = routeElement.attributes();
                     String contextVariableField = null;
                     String appendToResultValueField = null;
                     for (Object attribute : attributes) {

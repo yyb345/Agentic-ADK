@@ -233,6 +233,9 @@ public class DashScopeChatModel extends BaseChatModel<CompletionRequest> {
                     if(list.size() > 0 && list.get(0) instanceof ChatMessageContent) {
                         aiMessage.setContent(((ChatMessageContent)list.get(0)).getText());
                     }
+                    else if(list.size() > 0 && list.get(0) instanceof Map) {
+                        aiMessage.setContent((String) ((Map) list.get(0)).get("text"));
+                    }
                 } else if(chatMessage.getContent() instanceof String) {
                     aiMessage.setContent(chatMessage.getContent().toString());
                 }

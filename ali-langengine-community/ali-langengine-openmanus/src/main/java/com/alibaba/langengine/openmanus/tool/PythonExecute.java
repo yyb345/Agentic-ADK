@@ -22,11 +22,11 @@ import com.alibaba.langengine.core.tool.BaseTool;
 import com.alibaba.langengine.core.tool.ToolExecuteResult;
 import com.alibaba.langengine.openmanus.tool.support.CodeExecutionResult;
 import com.alibaba.langengine.openmanus.tool.support.CodeUtils;
-import com.alibaba.langengine.openmanus.tool.support.LogIdGenerator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.alibaba.langengine.tool.PythonCodeConstants.LLMMATH_PYTHON_CODE;
 
@@ -59,7 +59,8 @@ public class PythonExecute extends BaseTool {
         Map<String, Object> toolInputMap = JSON.parseObject(toolInput, new TypeReference<Map<String, Object>>() {});
         String code = (String) toolInputMap.get("code");
 //        String result = PythonUtils.invokePythonCodeWithArch(code, arm64);
-        CodeExecutionResult codeExecutionResult = CodeUtils.executeCode(code, "python", "tmp_" + LogIdGenerator.generateUniqueId() + ".py", arm64, new HashMap<>());
+        String uuid = UUID.randomUUID().toString();
+        CodeExecutionResult codeExecutionResult = CodeUtils.executeCode(code, "python", "tmp_" + uuid + ".py", arm64, new HashMap<>());
         String result = codeExecutionResult.getLogs();
         return new ToolExecuteResult(result);
     }

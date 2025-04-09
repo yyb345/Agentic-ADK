@@ -1,27 +1,20 @@
 package com.alibaba.langengine.core.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.langengine.core.callback.ExecutionContext;
 import com.alibaba.langengine.core.chatmodel.BaseChatModel;
 import com.alibaba.langengine.core.config.LangEngineConfiguration;
-import com.alibaba.langengine.core.messages.AIMessage;
-import com.alibaba.langengine.core.messages.BaseMessage;
-import com.alibaba.langengine.core.messages.HumanMessage;
-import com.alibaba.langengine.core.messages.SystemMessage;
-import com.alibaba.langengine.core.model.fastchat.completion.chat.ChatCompletionRequest;
+import com.alibaba.langengine.core.messages.*;
+import com.alibaba.langengine.core.model.fastchat.completion.chat.*;
 import com.alibaba.langengine.core.model.fastchat.completion.chat.ChatMessage;
-import com.alibaba.langengine.core.model.fastchat.completion.chat.ChatMessageConstant;
-import com.alibaba.langengine.core.model.fastchat.completion.chat.ChatMessageContent;
+import com.alibaba.langengine.core.model.fastchat.runs.ToolCallFunction;
 import com.alibaba.langengine.core.outputs.Generation;
 import com.alibaba.langengine.core.outputs.LLMResult;
 import com.alibaba.langengine.core.outputs.context.LlmResultHolder;
@@ -42,11 +35,11 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
 
     @Override
     public LLMResult generate(
-        List<String> prompts,
-        List<String> stops,
-        ExecutionContext executionContext,
-        Consumer<String> consumer,
-        Map<String, Object> extraAttributes
+            List<String> prompts,
+            List<String> stops,
+            ExecutionContext executionContext,
+            Consumer<String> consumer,
+            Map<String, Object> extraAttributes
     ) {
         executionContext = ensureExecutionContext(executionContext);
 
@@ -111,6 +104,10 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
     private static HashSet<String> roleSet = new HashSet<String>(){{
         this.add("system");
         this.add("assistant");
+        this.add("user");
+        this.add("function");
+        this.add("image_url");
+        this.add("audio");
     }};
     public static List<Map<String, String>> extractStructuredContent(String text) {
         List<Map<String, String>> contents = new ArrayList<>();
@@ -147,26 +144,28 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
      * @param baseMessage 基本消息对象。
      * @return 转换后的消息对象。
      */
-    private BaseMessage convertToMessage(Map<String, String> baseMessage) {
+    private List<BaseMessage> convertToMessage(Map<String, String> baseMessage) {
         String role = baseMessage.get("role");
         String text = baseMessage.get("content");
         switch (role){
             case "assistant":
-                return new AIMessage(text);
+                return Collections.singletonList(new AIMessage(text));
             case "system":
-                return new SystemMessage(text);
+                return Collections.singletonList(new SystemMessage(text));
             case "user":
-                return new HumanMessage(text);
+                return Collections.singletonList(new HumanMessage(text));
             case "image_url":
-                return buildTypedMessage("image_url", text);
+                return Collections.singletonList(buildTypedMessage("image_url", text));
             case "audio":
-                return buildTypedMessage("audio", text);
+                return Collections.singletonList(buildTypedMessage("audio", text));
             case "video":
                 HumanMessage humanMessage = buildTypedMessage("video",text);
-                return humanMessage;
+                return Collections.singletonList(humanMessage);
+            case "function":
+                return parseTools(text).stream().collect(Collectors.toList());
             default:
                 HumanMessage m = new HumanMessage(text);
-                return m;
+                return Collections.singletonList(m);
         }
     }
 
@@ -190,7 +189,7 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
 
     @Override
     public String run(String prompt, List<String> list, Consumer<String> consumer,
-        Map<String, Object> extraAttributes) {
+                      Map<String, Object> extraAttributes) {
 
         try {
 
@@ -198,8 +197,19 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
             // 取用户的原始输入
             List<Map<String, String>> messageList = extractStructuredContent(prompt);
             List<BaseMessage> messages = processHistoryMessages(prompt,messageList);
+            List<BaseMessage> allMessages = new ArrayList<>();
+            List<FunctionDefinition> functions = null;
+            for (BaseMessage message : messages) {
+                if(message instanceof FunctionMessage){
+                    functions.add((FunctionDefinition)message.getAdditionalKwargs().get("def"));
+                    message.setAdditionalKwargs(null);
+                }else {
+                    //TODO function简单的要不要？
+                    allMessages.add(message);
+                }
+            }
 
-            return baseChatModel.run(messages, null, list, null, extraAttributes).getContent();
+            return baseChatModel.run(allMessages, functions, list, null, extraAttributes).getContent();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -225,13 +235,86 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
     private List<BaseMessage> processHistoryMessages(String prompt,List<Map<String, String>> messageList) {
         // 转换 BaseMessage 列表为 Message 列表
         List<BaseMessage> messages = messageList.stream()
-            .map(this::convertToMessage)
-            .collect(Collectors.toList());
+                .map(this::convertToMessage)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
 
         if(messages.size() == 0){
             messages.add(new HumanMessage(prompt));
         }
         return messages;
+    }
+
+    public static List<FunctionMessage> parseTools(String inputText) {
+        // 正则表达式匹配 <tools> 标签中的 JSON 对象
+        String regex = "<tools>\\s*(\\{.*?\\})\\s*(\\{.*?\\})?\\s*</tools>";
+        Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(inputText);
+
+        List<JSONObject> tools = new ArrayList<>();
+
+        if (matcher.find()) {
+            // 提取第一个 JSON 对象
+            String json1 = matcher.group(1);
+            tools.add(JSON.parseObject(json1));
+
+            // 如果存在第二个 JSON 对象，则提取
+            String json2 = matcher.group(2);
+            if (json2 != null && !json2.isEmpty()) {
+                tools.add(JSON.parseObject(json2));
+            }
+        }
+        List<FunctionMessage> toolsResults = new ArrayList<>();
+        //list中如果type = function，取出function字段变成FunctionDefinition
+        if(tools.size() != 0){
+            for(JSONObject jsonObject : tools){
+                if(jsonObject.getString("type").equals("function")){
+                    new FunctionDefinition();
+                    JSONObject func = jsonObject.getJSONObject("function");
+                    FunctionMessage funcMessage = new FunctionMessage();
+                    funcMessage.setName(func.getString("name"));
+                    funcMessage.setContent(func.getString("description"));
+                    FunctionDefinition functionDefinition = JSON.parseObject(func.toJSONString(), FunctionDefinition.class);
+                    funcMessage.setAdditionalKwargs(new HashMap<String, Object>(){{
+                        put("def", functionDefinition);
+                    }});
+                }
+            }
+        }
+
+        return toolsResults;
+    }
+    public static void main(String args[]){
+        String tool = "<tool_call>\n"
+                + "{\"name\": \"get_current_temperature\", \"arguments\": {\"location\": \"San Francisco, California, United States\", \"unit\": \"celsius\"}}\n"
+                + "</tool_call>\n"
+                + "<tool_call>\n"
+                + "{\"name\": \"get_temperature_date\", \"arguments\": {\"location\": \"San Francisco, California, United States\", \"date\": \"2024-10-01\", \"unit\": \"celsius\"}}\n"
+                + "</tool_call>";
+        String item = "{\"name\": \"get_current_temperature\", \"arguments\": {\"location\": \"San Francisco, California, United States\", \"unit\": \"celsius\"}}\n";
+        ToolCallFunction tools = JSON.parseObject(item, ToolCallFunction.class);
+
+        String text = "You are Qwen, created by Alibaba Cloud. You are a helpful assistant.\n"
+                + "\n"
+                + "Current Date: 2024-09-30\n"
+                + "\n"
+                + "# Tools\n"
+                + "\n"
+                + "You may call one or more functions to assist with the user query.\n"
+                + "\n"
+                + "You are provided with function signatures within <tools></tools> XML tags:\n"
+                + "<tools>\n"
+                + "{\"type\": \"function\", \"function\": {\"name\": \"get_current_temperature\", \"description\": \"Get current temperature at a location.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"location\": {\"type\": \"string\", \"description\": \"The location to get the temperature for, in the format \\\"City, State, Country\\\".\"}, \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The unit to return the temperature in. Defaults to \\\"celsius\\\".\"}}, \"required\": [\"location\"]}}}\n"
+                + "{\"type\": \"function\", \"function\": {\"name\": \"get_temperature_date\", \"description\": \"Get temperature at a location and date.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"location\": {\"type\": \"string\", \"description\": \"The location to get the temperature for, in the format \\\"City, State, Country\\\".\"}, \"date\": {\"type\": \"string\", \"description\": \"The date to get the temperature for, in the format \\\"Year-Month-Day\\\".\"}, \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The unit to return the temperature in. Defaults to \\\"celsius\\\".\"}}, \"required\": [\"location\", \"date\"]}}}\n"
+                + "</tools>\n"
+                + "\n"
+                + "For each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\n"
+                + "<tool_call>\n"
+                + "{\"name\": <function-name>, \"arguments\": <args-json-object>}\n"
+                + "</tool_call>";
+
+        System.out.println(parseTools(text));
+
     }
 
 }

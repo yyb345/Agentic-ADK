@@ -23,12 +23,12 @@
     <dependency>
       <groupId>ai.djl</groupId>
       <artifactId>api</artifactId>
-      <version>0.23.0</version>
+      <version>0.31.1</version>
     </dependency>
     <dependency>
       <groupId>ai.djl.pytorch</groupId>
       <artifactId>pytorch-engine</artifactId>
-      <version>0.23.0</version>
+      <version>0.31.1</version>
     </dependency>
     <dependency>
       <groupId>ai.djl.paddlepaddle</groupId>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>ai.djl.huggingface</groupId>
       <artifactId>tokenizers</artifactId>
-      <version>0.23.0</version>
+      <version>0.31.1</version>
     </dependency>
     <dependency>
       <groupId>ai.djl.pytorch</groupId>
@@ -46,6 +46,11 @@
       <version>0.23.0</version>
     </dependency>
     <!-- djl end -->
+
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+    </dependency>
 
   </dependencies>
 
