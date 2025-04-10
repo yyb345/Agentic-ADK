@@ -65,10 +65,13 @@
 	<modules>
 		<module>ali-langengine-core</module>
 		<module>ali-langengine-demo</module>
+
 		<module>ali-langengine-infrastructure/ali-langengine-docloader</module>
 		<module>ali-langengine-infrastructure/ali-langengine-tool</module>
 		<module>ali-langengine-infrastructure/ali-langengine-mcp</module>
 		<module>ali-langengine-infrastructure/ali-langengine-deepsearch</module>
+		<module>ali-langengine-infrastructure/ali-langengine-gpt</module>
+
 		<module>ali-langengine-community/ali-langengine-openai</module>
 		<module>ali-langengine-community/ali-langengine-azure</module>
 		<module>ali-langengine-community/ali-langengine-dashscope</module>
