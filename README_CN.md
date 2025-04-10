@@ -32,6 +32,10 @@ alibaba-langengine-community：社区开源共建模块。
 
 alibaba-langengine-demo：相关示例模块。
 
+**maven**
+
+https://s01.oss.sonatype.org/#nexus-search;quick~ali-langengine
+
 **JDK版本要求**
 
 JDK 8+

@@ -34,6 +34,10 @@ ali-langengine-community: Community open-source co-construction module.
 
 alibaba-langengine-demo: Related example module.
 
+**maven**
+
+https://s01.oss.sonatype.org/#nexus-search;quick~ali-langengine
+
 **JDK version requirements**
 
 JDK 8+
