@@ -118,54 +118,50 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <header>${project.basedir}/license-header.txt</header>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-                    <properties>
-                        <year>2025</year>
-                    </properties>
-                    <mapping>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>format-license</id>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>check-license</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.mycila</groupId>-->
+<!--                <artifactId>license-maven-plugin</artifactId>-->
+<!--                <version>3.0</version>-->
+<!--                <configuration>-->
+<!--                    <header>${project.basedir}/license-header.txt</header>-->
+<!--                    <includes>-->
+<!--                        <include>**/*.java</include>-->
+<!--                    </includes>-->
+<!--                    <properties>-->
+<!--                        <year>2025</year>-->
+<!--                    </properties>-->
+<!--                    <mapping>-->
+<!--                        <java>SLASHSTAR_STYLE</java>-->
+<!--                    </mapping>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>format-license</id>-->
+<!--                        <goals>-->
+<!--                            <goal>format</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>check-license</id>-->
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
     <!-- Repository configuration for deployment -->
     <distributionManagement>
-        <!-- Repository for releases -->
-        <repository>
-            <id>github</id>
-            <name>GitHub AIDC-AI Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/AIDC-AI/ali-langengine</url>
-        </repository>
-        <!-- Repository for snapshots -->
         <snapshotRepository>
-            <id>github</id>
-            <name>GitHub AIDC-AI Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/AIDC-AI/ali-langengine</url>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <repositories>
