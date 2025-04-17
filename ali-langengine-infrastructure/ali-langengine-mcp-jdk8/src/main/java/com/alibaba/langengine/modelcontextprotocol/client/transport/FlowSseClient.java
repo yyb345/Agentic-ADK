@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -260,7 +261,7 @@ public class FlowSseClient {
 
 					// Process the stream
 					InputStream inputStream = connection.getInputStream();
-					reader = new BufferedReader(new InputStreamReader(inputStream));
+					reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
 					StringBuilder eventBuilder = new StringBuilder();
 					AtomicReference<String> currentEventId = new AtomicReference<String>();
