@@ -101,6 +101,7 @@
 		<module>ali-langengine-community/ali-langengine-deepseek</module>
 		<module>ali-langengine-community/ali-langengine-openmanus</module>
 		<module>ali-langengine-community/ali-langengine-tablestore</module>
+		<module>ali-langengine-community/ali-langengine-jsonrepair</module>
 
 <!--		<module>ali-langengine-community/ali-langengine-opensearch</module>-->
 <!--		<module>ali-langengine-community/ali-langengine-tair</module>-->

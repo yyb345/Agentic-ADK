@@ -283,6 +283,12 @@ public class McpAsyncClient {
         notificationHandlers.put(METHOD_NOTIFICATION_MESSAGE,
                 asyncLoggingNotificationHandler(loggingConsumersFinal));
 
+        // Ping Notification Handler
+        notificationHandlers.put(METHOD_PING, params -> {
+            logger.debug("Received ping notification: {}", params);
+            return CompletableFuture.completedFuture(null);
+        });
+
         this.mcpSession = new McpClientSession(requestTimeout, transport, requestHandlers, notificationHandlers);
     }
 
@@ -446,7 +452,7 @@ public class McpAsyncClient {
                     }
                 }
             }, initializationTimeout.toMillis(), TimeUnit.MILLISECONDS);
-            
+
             initializedFuture.thenCompose(new Function<InitializeResult, CompletableFuture<T>>() {
                 @Override
                 public CompletableFuture<T> apply(InitializeResult initResult) {
