@@ -5,11 +5,11 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>ali-langengine</artifactId>
-	<version>1.2.3-SNAPSHOT</version>
+	<version>1.2.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>ali-langengine</name>
 	<description>Alibaba LangEngine is an AI application development framework written in Java.</description>
-	<url>https://github.com/AIDC-AI/ali-langengine</url>
+	<url>https://github.com/AIDC-AI/Agentic-ADK</url>
 
 	<scm>
 		<url>https://github.com/AIDC-AI/Agentic-ADK</url>
