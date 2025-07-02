@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.alibaba</groupId>
         <artifactId>ali-langengine</artifactId>
-        <version>1.2.5-SNAPSHOT</version>
+        <version>1.2.6-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>ali-langengine-dflow</artifactId>
@@ -46,19 +46,19 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-core</artifactId>
-            <version>1.2.5-SNAPSHOT</version>
+            <version>1.2.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-dashscope</artifactId>
-            <version>1.2.5-SNAPSHOT</version>
+            <version>1.2.6-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-tool</artifactId>
-            <version>1.2.5-SNAPSHOT</version>
+            <version>1.2.6-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>

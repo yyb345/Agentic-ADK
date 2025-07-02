@@ -4,7 +4,7 @@
     <parent>
         <artifactId>ali-langengine</artifactId>
         <groupId>com.alibaba</groupId>
-        <version>1.2.5-SNAPSHOT</version>
+        <version>1.2.6-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -20,17 +20,17 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-core</artifactId>
-            <version>1.2.5-SNAPSHOT</version>
+            <version>1.2.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-openai</artifactId>
-            <version>1.2.5-SNAPSHOT</version>
+            <version>1.2.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-dashscope</artifactId>
-            <version>1.2.5-SNAPSHOT</version>
+            <version>1.2.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.aliyun.openservices</groupId>
