@@ -12,8 +12,8 @@
 	<url>https://github.com/AIDC-AI/ali-langengine</url>
 
 	<scm>
-		<url>https://github.com/AIDC-AI/ali-langengine</url>
-		<connection>scm:git:https://git@github.com/AIDC-AI/ali-langengine.git</connection>
+		<url>https://github.com/AIDC-AI/Agentic-ADK</url>
+		<connection>scm:git:https://git@github.com/AIDC-AI/Agentic-ADK.git</connection>
 	</scm>
 
 	<licenses>
