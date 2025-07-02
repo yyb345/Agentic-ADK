@@ -22,6 +22,7 @@ import com.alibaba.langengine.core.outputs.context.LlmResultHolder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 @Slf4j
@@ -31,6 +32,14 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
 
     public RawWrapChatModelLLM(BaseChatModel baseChatModel) {
         this.baseChatModel = baseChatModel;
+    }
+    public String getModel(){
+        return baseChatModel.getModel();
+    }
+
+
+    public String getLlmModelName(){
+        return baseChatModel.getLlmModelName();
     }
 
     @Override
@@ -120,8 +129,10 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
             Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
             Matcher matcher = pattern.matcher(text);
 
+            int end  = 0;
             // 遍历所有匹配结果
             while (matcher.find()) {
+                end = matcher.end();
                 // 提取角色和内容
                 String role = matcher.group("role");
                 String content = matcher.group("content").trim(); // 去除前后空白字符
@@ -131,13 +142,33 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
                 m.put("content", content);
                 contents.add(m);
             }
+
+            // 正则表达式匹配system、assistant和user的内容
+            String regexEnd = "<\\|im_start\\|>assistant\\s*(.*?)((?=<\\|im_end\\|>)|$)";
+
+            text = text.substring(end);
+            // 编译正则表达式
+            Pattern patternPartialEnd = Pattern.compile(regexEnd, Pattern.DOTALL);
+            Matcher matcherPatternPartialEnd = patternPartialEnd.matcher(text);
+
+            if (matcherPatternPartialEnd.find()) {
+                // 提取角色和内容
+                String content = matcherPatternPartialEnd.group(1).trim(); // 去除前后空白字符
+                if(StringUtils.isNotBlank(content)) {
+                    Map<String, String> m = new HashMap<>();
+                    // 将提取的内容放入Map中
+                    m.put("role", "assistantPartial");
+                    m.put("content", content);
+                    contents.add(m);
+                }
+            }
+
         } catch (Exception e) {
             log.info("extractStructuredContent error", e);
         }
 
         return contents;
     }
-
     /**
      * 将 BaseMessage 转换为 Message。
      *
@@ -148,6 +179,10 @@ public class RawWrapChatModelLLM extends BaseLLM<ChatCompletionRequest> {
         String role = baseMessage.get("role");
         String text = baseMessage.get("content");
         switch (role){
+            case "assistantPartial":
+                AIMessage message = new AIMessage(text);
+                message.setPrefix(true);
+                return Collections.singletonList(message);
             case "assistant":
                 return Collections.singletonList(new AIMessage(text));
             case "system":

@@ -39,7 +39,6 @@ public class ToolExecuteResult implements RunnableOutput {
      * 工具返回的内容
      */
     private String output;
-
     /**
      * 是否中断
      */

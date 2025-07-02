@@ -1,19 +1,4 @@
 /*
- * Copyright 2025 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
 * Copyright 2024 - 2024 the original author or authors.
 */
 package com.alibaba.langengine.modelcontextprotocol.client.transport;
@@ -24,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -52,7 +36,6 @@ import java.util.regex.Pattern;
  * handle any errors that occur during the connection.
  *
  * @author Christian Tzolov
- * @author aihe.ah
  * @see SseEventHandler
  * @see SseEvent
  */
@@ -261,7 +244,7 @@ public class FlowSseClient {
 
 					// Process the stream
 					InputStream inputStream = connection.getInputStream();
-					reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+					reader = new BufferedReader(new InputStreamReader(inputStream));
 
 					StringBuilder eventBuilder = new StringBuilder();
 					AtomicReference<String> currentEventId = new AtomicReference<String>();

@@ -43,6 +43,10 @@ public class ResponseCollector {
     }
 
     public void thinkCollect(String reasoningContent) {
+        // 移除</think>,自己来拼
+        if(reasoningContent != null) {
+            reasoningContent = reasoningContent.replaceAll("</think>", "");
+        }
         if(reasoningContentList.size() == 0
                 && !StringUtils.isEmpty(reasoningContent)) {
             reasoningContentList.add("<think>\n");

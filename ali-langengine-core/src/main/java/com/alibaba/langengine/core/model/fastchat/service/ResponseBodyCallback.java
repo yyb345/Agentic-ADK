@@ -50,6 +50,7 @@ public class ResponseBodyCallback implements Callback<ResponseBody> {
 
     @Override
     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+        log.info("ResponseBodyCallback onResponse");
         BufferedReader reader = null;
 
         try {
@@ -74,7 +75,7 @@ public class ResponseBodyCallback implements Callback<ResponseBody> {
             SSE sse = null;
 
             while (!emitter.isCancelled() && (line = reader.readLine()) != null) {
-                log.debug("stream line is {}", line);
+//                log.info("stream line is {}", line);
                 if (line.startsWith("data:")) {
                     String data = line.substring(5).trim();
                     sse = new SSE(data);
@@ -100,11 +101,14 @@ public class ResponseBodyCallback implements Callback<ResponseBody> {
                 }
             }
 
+            log.info("stream emitter onComplete");
             emitter.onComplete();
 
         } catch (Throwable t) {
+            log.info("stream emitter onFailure");
             onFailure(call, t);
         } finally {
+            log.info("stream emitter finally start");
             if (reader != null) {
                 try {
                     reader.close();
@@ -112,6 +116,7 @@ public class ResponseBodyCallback implements Callback<ResponseBody> {
                     // do nothing
                 }
             }
+            log.info("stream emitter finally end");
         }
     }
 

@@ -15,8 +15,10 @@
  */
 package com.alibaba.langengine.core.runnables;
 
+import com.alibaba.langengine.core.agent.AgentAction;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.langengine.core.callback.ExecutionContext;
@@ -32,7 +34,7 @@ public class RunnableConfig {
     /**
      * parallel second timeout
      */
-    private int parallelSecondTimeout = 300;
+    private int parallelSecondTimeout = 1200;
 
     /**
      * Metadata for this call and any sub-calls (eg. a Chain calling an LLM).
@@ -61,6 +63,8 @@ public class RunnableConfig {
      */
     private boolean streamLog = false;
 
+    private boolean async = false;
+
     /**
      * 额外属性
      */
@@ -70,4 +74,8 @@ public class RunnableConfig {
      * 上下文
      */
     private ExecutionContext executionContext;
+
+    private List<AgentAction> asyncFinishedAction;
+
+    private boolean asyncInterrupt;
 }

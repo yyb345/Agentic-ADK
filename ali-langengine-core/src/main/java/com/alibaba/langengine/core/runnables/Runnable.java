@@ -73,7 +73,7 @@ public abstract class Runnable<Input, Output> implements RunnableInterface<Input
             if(config != null) {
                 allFutures.get(config.getParallelSecondTimeout(), TimeUnit.SECONDS);
             } else {
-                allFutures.get(300, TimeUnit.SECONDS);
+                allFutures.get(1200, TimeUnit.SECONDS);
             }
 
             List<Output> outputs = new ArrayList<>();

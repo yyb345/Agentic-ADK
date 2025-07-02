@@ -15,21 +15,23 @@
  */
 package com.alibaba.langengine.core.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.alibaba.langengine.core.messages.AIMessage;
-import com.alibaba.langengine.core.messages.BaseMessage;
-import com.alibaba.langengine.core.messages.ChatMessage;
-import com.alibaba.langengine.core.messages.FunctionMessage;
-import com.alibaba.langengine.core.messages.HumanMessage;
-import com.alibaba.langengine.core.messages.SystemMessage;
+import com.alibaba.langengine.core.agent.AgentAction;
+import com.alibaba.langengine.core.messages.*;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author aihe.ah
  * @time 2023/9/13 11:08
  * 功能说明：
  */
+@Slf4j
 public class MessageUtils {
 
     /**
@@ -75,5 +77,89 @@ public class MessageUtils {
         }
 
         return messageDict;
+    }
+
+    /**
+     * 格式化AgentAction,默认为FunctionMessage
+     * @param agentAction
+     * @return
+     */
+    public static List<BaseMessage> formatActionMessage(AgentAction agentAction) {
+        List<BaseMessage> intermediateStep = new ArrayList<>();
+        // 结构示例：
+        // [{
+        //  "content": null,
+        //	"functionCall": {
+        //		"name": "add",
+        //		"arguments": "{\"number1\":333,\"number2\":444}"
+        //	},
+        //	"role": "assistant"
+        //}, {
+        //	"content": "777",
+        //	"name": "add",
+        //	"role": "function"
+        //}]
+
+        log.info("agentAction is {}", agentAction);
+
+//        boolean toolCallFormat = !StringUtils.isEmpty(agentAction.getPrevId());
+        boolean toolCallFormat = !CollectionUtils.isEmpty(agentAction.getActions());
+
+        if(!toolCallFormat) {
+            AIMessage aiMessage = new AIMessage();
+            Map<String, Object> functionCall = new HashMap<>();
+            functionCall.put("name", agentAction.getTool());
+            functionCall.put("arguments", agentAction.getToolInput());
+            Map<String, Object> additional = new HashMap<>();
+            additional.put("function_call", functionCall);
+            aiMessage.setAdditionalKwargs(additional);
+            if (!StringUtils.isEmpty(agentAction.getLog())) {
+                aiMessage.setContent(agentAction.getLog());
+            } else {
+                aiMessage.setContent("");
+            }
+            intermediateStep.add(aiMessage);
+
+            FunctionMessage functionMessage = new FunctionMessage();
+            functionMessage.setName(agentAction.getTool());
+            functionMessage.setContent(agentAction.getObservation());
+            intermediateStep.add(functionMessage);
+        } else {
+            List<AgentAction> childActions =  agentAction.getActions();
+
+            AIMessage aiMessage = new AIMessage();
+            List<Map<String, Object>> toolCalls = new ArrayList<>();
+
+            for (AgentAction childAction : childActions) {
+                Map<String, Object> toolCall = new HashMap<>();
+                Map<String, Object> functionCall = new HashMap<>();
+                functionCall.put("name", childAction.getTool());
+                functionCall.put("arguments", childAction.getToolInput());
+                toolCall.put("function", functionCall);
+                toolCall.put("id", childAction.getPrevId());
+                toolCall.put("type", "function");
+                toolCalls.add(toolCall);
+            }
+
+            Map<String, Object> additional = new HashMap<>();
+            additional.put("tool_calls", toolCalls);
+            aiMessage.setAdditionalKwargs(additional);
+
+            if (agentAction.getLog() != null) {
+                aiMessage.setContent(agentAction.getLog());
+            } else {
+                aiMessage.setContent("");
+            }
+            intermediateStep.add(aiMessage);
+
+            for (AgentAction childAction : childActions) {
+                ToolMessage toolMessage = new ToolMessage();
+//                toolMessage.setName(agentAction.getTool());
+                toolMessage.setTool_call_id(childAction.getPrevId());
+                toolMessage.setContent(childAction.getObservation());
+                intermediateStep.add(toolMessage);
+            }
+        }
+        return intermediateStep;
     }
 }

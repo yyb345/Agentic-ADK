@@ -78,7 +78,7 @@ public class RunnableParallel extends Runnable<Object, RunnableHashMap> {
             if(config != null) {
                 allFutures.get(config.getParallelSecondTimeout(), TimeUnit.SECONDS);
             } else {
-                allFutures.get(300, TimeUnit.SECONDS);
+                allFutures.get(1200, TimeUnit.SECONDS);
             }
 
             int counter = 0;

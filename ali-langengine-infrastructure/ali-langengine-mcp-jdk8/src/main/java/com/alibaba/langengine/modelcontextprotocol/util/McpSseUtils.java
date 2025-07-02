@@ -1,18 +1,3 @@
-/*
- * Copyright 2025 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.langengine.modelcontextprotocol.util;
 
 
@@ -63,7 +48,7 @@ public class McpSseUtils {
     /**
      * 默认SSE端点路径
      */
-    private static final String DEFAULT_SSE_ENDPOINT = "";
+    private static final String DEFAULT_SSE_ENDPOINT = "/sse";
 
     /**
      * 全局线程池，用于异步操作
@@ -530,16 +515,28 @@ public class McpSseUtils {
     }
 
     public static void main(String[] args) {
+//        for (int i = 0; i < 10; i++) {
+        AgentMagicCoreSwitch.ALWAYS_CREATE_NEW_MCP_CLIENT = true;
         List<Tool> tools = McpSseUtils
-                .listTools("https://mcp.aone.alibaba-inc.com/sessions/iIyh2HCDLwny7QN4/ali-staff/sse", "agentmagic", "1.0.0", 50, new HashMap<>(), "");
+//                .listTools("https://mcp.aone.alibaba-inc.com", "agentmagic", "1.0.0", 50, new HashMap<>(), "/sessions/iIyh2HCDLwny7QN4/ali-staff/sse");
+                .listTools("https://mcp.aone.alibaba-inc.com/sessions/iIyh2HCDLwny7QN4/ali-staff", "agentmagic", "1.0.0", 50, new HashMap<>(), "");
 
+//        List<Tool> tools = McpSseUtils.listTools("http://mw-mcp.taobao.net/mstest/sse", "agentmagic", "1.0.0", 50, new HashMap<>(), null);
         System.out.println(JSON.toJSONString(tools));
         HashMap<String, Object> params = new HashMap<>();
-        params.put("name", "致问");
-        CallToolResult callToolResult = McpSseUtils.callTool(
-                "https://mcp.aone.alibaba-inc.com/sessions/iIyh2HCDLwny7QN4/ali-staff/sse", "agentmagic", "1.0.0", "get_empid_by_name", params, 30
-        );
-        System.out.println(callToolResult);
+        params.put("bucketName", "test");
+        params.put("ossPath", "test");
+//        CallToolResult callToolResult = McpSseUtils.callTool("http://pre-mw-mcp.alibaba-inc.com/aidc-agentpaas-center/sse", "agentmagic", "1.0.0", "aidc-agentpaas-center/测试服务", params, null);
+
+//        System.out.println(JSON.toJSONString(tools));
+//        System.out.println(callToolResult);
+//        }
+//        HashMap<String, Object> params = new HashMap<>();
+//        params.put("a",1);
+//        params.put("b",2);
+//        CallToolResult callToolResult = McpSseUtils.callTool("http://mcp.aihe.space", "agentmagic", "1.0.0",
+//                "add", params, 50, params, "/sse");
+//        System.out.println(JSON.toJSONString(callToolResult));
     }
 
     /**

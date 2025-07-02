@@ -190,6 +190,7 @@ public abstract class RetrofitInitService<T> {
     }
 
     public static <T> Flowable<T> stream(Call<ResponseBody> apiCall, Class<T> cl) {
+        log.info("RetrofitInitService stream");
         Class<?> serviceClass = callerClass.get();
         return stream(apiCall).map(sse -> JacksonUtils.getServiceMapper(serviceClass).readValue(sse.getData(), cl));
     }
@@ -223,7 +224,8 @@ public abstract class RetrofitInitService<T> {
     public OkHttpClient defaultClient(Duration timeout, Proxy proxy) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .proxy(Proxy.NO_PROXY)
-//            .connectionPool(new ConnectionPool(200, 5, TimeUnit.SECONDS))
+            .connectTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
+            .writeTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
             .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS);
         // contribute by dapeng.fdp
         if (proxy != null) {

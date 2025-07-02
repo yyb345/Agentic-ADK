@@ -33,5 +33,4 @@ public class ApiLogResult {
     private String appName;
     private String apiName;
     private Map<String, String> content;
-    
 }

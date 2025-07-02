@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.alibaba</groupId>
         <artifactId>ali-langengine</artifactId>
-        <version>1.2.3-SNAPSHOT</version>
+        <version>1.2.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -16,53 +16,53 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-core</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-openai</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-dashscope</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-xinghuo</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-sqlite</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-docloader</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-tool</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-hologres</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-gpt</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>ali-langengine-duckdb</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -73,6 +73,12 @@
             <version>3.3.4</version>
         </dependency>
         <!-- jdbc end -->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.15.4</version>
+        </dependency>
 
     </dependencies>
 

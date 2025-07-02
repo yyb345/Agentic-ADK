@@ -1,18 +1,7 @@
 /*
- * Copyright 2025 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2024-2024 the original author or authors.
  */
+
 package com.alibaba.langengine.modelcontextprotocol.client.transport;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -48,36 +37,10 @@ import java.util.function.Function;
  *
  * @author Christian Tzolov
  * @author Dariusz Jędrzejczyk
- * @author aihe.ah
  */
 public class StdioClientTransport implements McpClientTransport {
 
     private static final Logger logger = LoggerFactory.getLogger(StdioClientTransport.class);
-
-    // 共享的定时任务线程池，用于处理超时
-    private static final java.util.concurrent.ScheduledExecutorService SHARED_SCHEDULER =
-        java.util.concurrent.Executors.newSingleThreadScheduledExecutor(r -> {
-            Thread t = new Thread(r, "mcp-timeout-scheduler");
-            t.setDaemon(true); // 设置为守护线程，这样不会阻止JVM退出
-            return t;
-        });
-
-    /**
-     * 关闭共享的线程池
-     * 这个方法应该在应用程序退出前调用，以确保线程池正确关闭
-     */
-    public static void shutdownSharedScheduler() {
-        try {
-            logger.info("Shutting down shared scheduler");
-            SHARED_SCHEDULER.shutdownNow();
-            // 等待线程池关闭
-            SHARED_SCHEDULER.awaitTermination(2, java.util.concurrent.TimeUnit.SECONDS);
-        } catch (Exception e) {
-            logger.error("Error shutting down shared scheduler", e);
-        }
-    }
-
-
 
     private final Sinks.Many<JSONRPCMessage> inboundSink;
 
@@ -118,32 +81,7 @@ public class StdioClientTransport implements McpClientTransport {
     private Consumer<String> stdErrorHandler = new Consumer<String>() {
         @Override
         public void accept(String error) {
-            // 根据错误消息的内容决定日志级别
-            if (error == null || error.trim().isEmpty()) {
-                return;
-            }
-
-            // 常见的非关键错误，降级为DEBUG
-            if (error.contains("EPERM: operation not permitted") ||
-                error.contains("node:fs:") ||
-                error.contains("Error: ENOENT: no such file or directory") ||
-                error.contains("Warning:") ||
-                error.startsWith("^") ||
-                error.trim().isEmpty()) {
-
-                logger.debug("STDERR Message received: {}", error);
-            }
-            // 关键错误，保持WARN级别
-            else if (error.contains("Error:") ||
-                     error.contains("Exception:") ||
-                     error.contains("Failed:")) {
-
-                logger.warn("STDERR Error: {}", error);
-            }
-            // 其他错误信息，使用INFO级别
-            else {
-                logger.info("STDERR Message: {}", error);
-            }
+            logger.info("STDERR Message received: {}", error);
         }
     };
 
@@ -172,29 +110,15 @@ public class StdioClientTransport implements McpClientTransport {
 
         this.params = params;
 
-        this.objectMapper = objectMapper;
+        // Configure ObjectMapper to handle non-standard getter methods
+        this.objectMapper = configureObjectMapper(objectMapper);
 
         this.errorSink = Sinks.many().unicast().onBackpressureBuffer();
 
-        // 使用共享的线程工厂创建线程池
-        this.inboundScheduler = Schedulers.fromExecutorService(
-            Executors.newSingleThreadExecutor(r -> {
-                Thread t = new Thread(r, "mcp-inbound");
-                t.setDaemon(true);
-                return t;
-            }), "inbound");
-        this.outboundScheduler = Schedulers.fromExecutorService(
-            Executors.newSingleThreadExecutor(r -> {
-                Thread t = new Thread(r, "mcp-outbound");
-                t.setDaemon(true);
-                return t;
-            }), "outbound");
-        this.errorScheduler = Schedulers.fromExecutorService(
-            Executors.newSingleThreadExecutor(r -> {
-                Thread t = new Thread(r, "mcp-error");
-                t.setDaemon(true);
-                return t;
-            }), "error");
+        // Start threads
+        this.inboundScheduler = Schedulers.fromExecutorService(Executors.newSingleThreadExecutor(), "inbound");
+        this.outboundScheduler = Schedulers.fromExecutorService(Executors.newSingleThreadExecutor(), "outbound");
+        this.errorScheduler = Schedulers.fromExecutorService(Executors.newSingleThreadExecutor(), "error");
     }
 
     /**
@@ -205,105 +129,42 @@ public class StdioClientTransport implements McpClientTransport {
      * @throws RuntimeException if the process fails to start or if the process streams
      *                          are null
      */
-    // Default timeout for connection in seconds
-    private static final int DEFAULT_CONNECT_TIMEOUT_SECONDS = 10;
-
     @Override
     public CompletableFuture<Void> connect(Function<CompletableFuture<JSONRPCMessage>, CompletableFuture<JSONRPCMessage>> handler) {
-        CompletableFuture<Void> connectionFuture = CompletableFuture.runAsync(new Runnable() {
+        return CompletableFuture.runAsync(new Runnable() {
             @Override
             public void run() {
+                handleIncomingMessages(handler);
+                handleIncomingErrors();
+
+                // Prepare command and environment
+                List<String> fullCommand = new ArrayList<String>();
+                fullCommand.add(params.getCommand());
+                fullCommand.addAll(params.getArgs());
+
+                ProcessBuilder processBuilder = getProcessBuilder();
+                processBuilder.command(fullCommand);
+                processBuilder.environment().putAll(params.getEnv());
+
+                // Start the process
                 try {
-                    // Set up message handlers first
-                    handleIncomingMessages(handler);
-                    handleIncomingErrors();
-
-                    // Prepare command and environment
-                    List<String> fullCommand = new ArrayList<>();
-                    fullCommand.add(params.getCommand());
-                    fullCommand.addAll(params.getArgs());
-
-                    logger.info("Starting process with command: {}", fullCommand);
-
-                    ProcessBuilder processBuilder = getProcessBuilder();
-                    processBuilder.command(fullCommand);
-                    processBuilder.environment().putAll(params.getEnv());
-
-                    // Redirect error stream to ensure it's properly handled
-                    processBuilder.redirectErrorStream(false);
-
-                    // Start the process
-                    try {
-                        process = processBuilder.start();
-                        logger.info("Process started successfully");
-                    } catch (IOException e) {
-                        logger.error("Failed to start process with command: {}", fullCommand, e);
-                        throw new RuntimeException("Failed to start process with command: " + fullCommand, e);
-                    }
-
-                    // Validate process streams
-                    if (process.getInputStream() == null || process.getOutputStream() == null) {
-                        process.destroy();
-                        logger.error("Process input or output stream is null");
-                        throw new RuntimeException("Process input or output stream is null");
-                    }
-
-                    // Start threads for processing I/O
-                    startInboundProcessing();
-                    startOutboundProcessing();
-                    startErrorProcessing();
-
-                    // Check if process is alive after starting
-                    if (!process.isAlive()) {
-                        try {
-                            int exitCode = process.exitValue();
-                            logger.error("Process exited immediately with code: {}", exitCode);
-                            throw new RuntimeException("Process exited immediately with code: " + exitCode);
-                        } catch (IllegalThreadStateException e) {
-                            // This shouldn't happen since we checked !isAlive()
-                            logger.warn("Unexpected process state", e);
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.error("Error during connection setup", e);
-                    throw e;
+                    process = processBuilder.start();
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to start process with command: " + fullCommand, e);
                 }
+
+                // Validate process streams
+                if (process.getInputStream() == null || process.getOutputStream() == null) {
+                    process.destroy();
+                    throw new RuntimeException("Process input or output stream is null");
+                }
+
+                // Start threads
+                startInboundProcessing();
+                startOutboundProcessing();
+                startErrorProcessing();
             }
         });
-
-        // Add timeout to the connection future
-        CompletableFuture<Void> timeoutCompletableFuture = new CompletableFuture<>();
-
-        // 使用共享的定时任务线程池来处理超时
-        java.util.concurrent.ScheduledFuture<?> timeoutFuture = SHARED_SCHEDULER.schedule(() -> {
-            if (!connectionFuture.isDone()) {
-                logger.warn("Connection timed out after {} seconds", DEFAULT_CONNECT_TIMEOUT_SECONDS);
-                CompletableFuture.runAsync(() -> {
-                    // If we timeout, make sure to clean up resources
-                    if (process != null) {
-                        logger.warn("Terminating process due to connection timeout");
-                        process.destroyForcibly();
-                    }
-                });
-                timeoutCompletableFuture.completeExceptionally(
-                    new java.util.concurrent.TimeoutException("Connection timed out after " +
-                        DEFAULT_CONNECT_TIMEOUT_SECONDS + " seconds"));
-            }
-        }, DEFAULT_CONNECT_TIMEOUT_SECONDS, java.util.concurrent.TimeUnit.SECONDS);
-
-        // Either the connection completes or we timeout
-        connectionFuture.whenComplete((result, ex) -> {
-            // 取消超时任务
-            timeoutFuture.cancel(false);
-
-            if (ex == null) {
-                timeoutCompletableFuture.complete(null);
-            } else {
-                timeoutCompletableFuture.completeExceptionally(ex);
-            }
-        });
-
-        return timeoutCompletableFuture;
     }
 
     /**
@@ -313,15 +174,7 @@ public class StdioClientTransport implements McpClientTransport {
      * @return A new ProcessBuilder instance
      */
     protected ProcessBuilder getProcessBuilder() {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-
-        // Ensure we don't inherit IO streams from parent process
-        // This is important for IntelliJ IDEA which might have different stream handling
-        processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
-        processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
-        processBuilder.redirectError(ProcessBuilder.Redirect.PIPE);
-
-        return processBuilder;
+        return new ProcessBuilder();
     }
 
     /**
@@ -361,21 +214,11 @@ public class StdioClientTransport implements McpClientTransport {
             public void run() {
                 BufferedReader processErrorReader = null;
                 try {
-                    logger.info("Starting error processing thread");
                     processErrorReader = new BufferedReader(
-                            new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8));
+                            new InputStreamReader(process.getErrorStream()));
                     String line;
-
-                    // Check if process is still alive before starting to read
-                    if (!process.isAlive()) {
-                        logger.warn("Process is not alive before starting to read error stream");
-                        return;
-                    }
-
-                    logger.info("Error processing thread ready to read");
-                    while (!isClosing && process.isAlive() && (line = processErrorReader.readLine()) != null) {
+                    while (!isClosing && (line = processErrorReader.readLine()) != null) {
                         final String errorLine = line;
-                        logger.debug("Received error line: {}", errorLine);
                         try {
                             if (!errorSink.tryEmitNext(errorLine).isSuccess()) {
                                 if (!isClosing) {
@@ -390,18 +233,12 @@ public class StdioClientTransport implements McpClientTransport {
                             break;
                         }
                     }
-
-                    logger.info("Exited error processing loop. isClosing={}, process.isAlive={}",
-                               isClosing, process != null ? process.isAlive() : "process is null");
-
                 } catch (IOException e) {
                     if (!isClosing) {
                         logger.error("Error reading from error stream", e);
                     }
                 } finally {
-                    if (!isClosing) {
-                        isClosing = true;
-                    }
+                    isClosing = true;
                     errorSink.tryEmitComplete();
                     if (processErrorReader != null) {
                         try {
@@ -410,7 +247,6 @@ public class StdioClientTransport implements McpClientTransport {
                             logger.error("Error closing error stream reader", e);
                         }
                     }
-                    logger.info("Error processing thread terminated");
                 }
             }
         });
@@ -425,13 +261,7 @@ public class StdioClientTransport implements McpClientTransport {
                             CompletableFuture<JSONRPCMessage> messageFuture = CompletableFuture.completedFuture(message);
                             try {
                                 CompletableFuture<JSONRPCMessage> resultFuture = inboundMessageHandler.apply(messageFuture);
-                                // Add a handler for the result future to catch any errors
-                                resultFuture.exceptionally(error -> {
-                                    if (!isClosing) {
-                                        logger.error("Error in message handler result", error);
-                                    }
-                                    return null;
-                                });
+                                // We don't need to do anything with the result as this is just handling incoming messages
                             } catch (Exception e) {
                                 if (!isClosing) {
                                     logger.error("Error processing inbound message", e);
@@ -477,30 +307,12 @@ public class StdioClientTransport implements McpClientTransport {
             public void run() {
                 BufferedReader processReader = null;
                 try {
-                    logger.info("Starting inbound processing thread");
-                    processReader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+                    processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     String line;
-
-                    // Check if process is still alive before starting to read
-                    if (!process.isAlive()) {
-                        logger.warn("Process is not alive before starting to read input stream");
-                        return;
-                    }
-
-                    logger.info("Inbound processing thread ready to read");
-                    while (!isClosing && process.isAlive() && (line = processReader.readLine()) != null) {
+                    while (!isClosing && (line = processReader.readLine()) != null) {
                         final String currentLine = line;
-                        logger.debug("Received line: {}", currentLine);
-
-                        if (currentLine.trim().isEmpty()) {
-                            logger.debug("Skipping empty line");
-                            continue;
-                        }
-
                         try {
                             JSONRPCMessage message = McpSchema.deserializeJsonRpcMessage(objectMapper, currentLine);
-                            logger.debug("Deserialized message: {}", message);
-
                             if (!inboundSink.tryEmitNext(message).isSuccess()) {
                                 if (!isClosing) {
                                     logger.error("Failed to enqueue inbound message: {}", message);
@@ -511,21 +323,15 @@ public class StdioClientTransport implements McpClientTransport {
                             if (!isClosing) {
                                 logger.error("Error processing inbound message for line: " + currentLine, e);
                             }
-                            // Don't break here, try to continue processing other messages
+                            break;
                         }
                     }
-
-                    logger.info("Exited inbound processing loop. isClosing={}, process.isAlive={}",
-                               isClosing, process != null ? process.isAlive() : "process is null");
-
                 } catch (IOException e) {
                     if (!isClosing) {
                         logger.error("Error reading from input stream", e);
                     }
                 } finally {
-                    if (!isClosing) {
-                        isClosing = true;
-                    }
+                    isClosing = true;
                     inboundSink.tryEmitComplete();
                     if (processReader != null) {
                         try {
@@ -534,7 +340,6 @@ public class StdioClientTransport implements McpClientTransport {
                             logger.error("Error closing input stream reader", e);
                         }
                     }
-                    logger.info("Inbound processing thread terminated");
                 }
             }
         });
@@ -549,7 +354,6 @@ public class StdioClientTransport implements McpClientTransport {
         this.handleOutbound(new Function<Flux<JSONRPCMessage>, Flux<JSONRPCMessage>>() {
             @Override
             public Flux<JSONRPCMessage> apply(Flux<JSONRPCMessage> messages) {
-                logger.info("Starting outbound processing");
                 return messages
                         // this bit is important since writes come from user threads and we
                         // want to ensure that the actual writing happens on a dedicated thread
@@ -557,9 +361,8 @@ public class StdioClientTransport implements McpClientTransport {
                         .handle(new BiConsumer<JSONRPCMessage, SynchronousSink<JSONRPCMessage>>() {
                             @Override
                             public void accept(JSONRPCMessage message, SynchronousSink<JSONRPCMessage> s) {
-                                if (message != null && !isClosing && process != null && process.isAlive()) {
+                                if (message != null && !isClosing) {
                                     try {
-                                        logger.debug("Serializing outbound message: {}", message);
                                         String jsonMessage = objectMapper.writeValueAsString(message);
                                         // Escape any embedded newlines in the JSON message as per spec:
                                         // https://spec.modelcontextprotocol.io/specification/basic/transports/#stdio
@@ -567,34 +370,15 @@ public class StdioClientTransport implements McpClientTransport {
                                         // embedded newlines.
                                         jsonMessage = jsonMessage.replace("\r\n", "\\n").replace("\n", "\\n").replace("\r", "\\n");
 
-                                        logger.debug("Sending message: {}", jsonMessage);
-
                                         final java.io.OutputStream os = process.getOutputStream();
-                                        if (os != null) {
-                                            synchronized (os) {
-                                                os.write(jsonMessage.getBytes(StandardCharsets.UTF_8));
-                                                os.write("\n".getBytes(StandardCharsets.UTF_8));
-                                                os.flush();
-                                                logger.debug("Message sent successfully");
-                                            }
-                                            s.next(message);
-                                        } else {
-                                            logger.error("Output stream is null");
-                                            s.error(new RuntimeException("Output stream is null"));
+                                        synchronized (os) {
+                                            os.write(jsonMessage.getBytes(StandardCharsets.UTF_8));
+                                            os.write("\n".getBytes(StandardCharsets.UTF_8));
+                                            os.flush();
                                         }
+                                        s.next(message);
                                     } catch (IOException e) {
-                                        logger.error("Error writing to output stream", e);
                                         s.error(new RuntimeException(e));
-                                    }
-                                } else {
-                                    if (isClosing) {
-                                        logger.debug("Skipping message send because transport is closing");
-                                    } else if (process == null) {
-                                        logger.error("Process is null");
-                                        s.error(new RuntimeException("Process is null"));
-                                    } else if (!process.isAlive()) {
-                                        logger.error("Process is not alive");
-                                        s.error(new RuntimeException("Process is not alive"));
                                     }
                                 }
                             }
@@ -634,100 +418,59 @@ public class StdioClientTransport implements McpClientTransport {
      */
     @Override
     public CompletableFuture<Void> closeGracefully() {
-        final CompletableFuture<Void> future = new CompletableFuture<>();
-
-        // 创建一个单独的线程池来处理关闭操作
-        java.util.concurrent.ExecutorService executor =
-            java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
-                Thread t = new Thread(r, "mcp-shutdown");
-                t.setDaemon(false); // 使用非守护线程，确保它能完成
-                return t;
-            });
+        final CompletableFuture<Void> future = new CompletableFuture<Void>();
 
         // Run the shutdown process in a separate thread
-        CompletableFuture.runAsync(() -> {
-            try {
-                isClosing = true;
-                logger.info("Initiating graceful shutdown");
-
-                // First complete all sinks to stop accepting new messages
-                inboundSink.tryEmitComplete();
-                outboundSink.tryEmitComplete();
-                errorSink.tryEmitComplete();
-
-                // Give a short time for any pending messages to be processed
+        CompletableFuture.runAsync(new Runnable() {
+            @Override
+            public void run() {
                 try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+                    isClosing = true;
+                    logger.debug("Initiating graceful shutdown");
 
-                logger.info("Sending TERM to process");
-                if (process != null) {
-                    // First try a graceful shutdown
-                    process.destroy();
+                    // First complete all sinks to stop accepting new messages
+                    inboundSink.tryEmitComplete();
+                    outboundSink.tryEmitComplete();
+                    errorSink.tryEmitComplete();
 
-                    // Wait for the process to exit with a timeout
-                    boolean exited = false;
+                    // Give a short time for any pending messages to be processed
                     try {
-                        exited = process.waitFor(3, java.util.concurrent.TimeUnit.SECONDS);
-                        if (exited) {
-                            if (process.exitValue() != 0) {
-                                logger.warn("Process terminated with code " + process.exitValue());
-                            } else {
-                                logger.info("Process terminated normally");
-                            }
-                        } else {
-                            // Process didn't exit within timeout, force kill
-                            logger.warn("Process did not exit within timeout, forcing termination");
-                            process.destroyForcibly();
-
-                            // Wait again with timeout
-                            exited = process.waitFor(2, java.util.concurrent.TimeUnit.SECONDS);
-                            if (exited) {
-                                logger.info("Process forcibly terminated with code " + process.exitValue());
-                            } else {
-                                logger.error("Failed to terminate process even with force");
-                            }
-                        }
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        logger.warn("Process wait interrupted", e);
                     }
-                } else {
-                    logger.warn("Process not started");
-                }
 
-                // The Threads are blocked on readLine so disposeGracefully would not
-                // interrupt them, therefore we issue an async hard dispose.
-                logger.info("Disposing schedulers");
-                inboundScheduler.dispose();
-                errorScheduler.dispose();
-                outboundScheduler.dispose();
-
-                // 注意：我们不在这里关闭SHARED_SCHEDULER，因为它是静态共享的
-                // 它将在JVM退出时由我们注册的关闭钩子关闭
-
-                logger.info("Graceful shutdown completed");
-                future.complete(null);
-            } catch (Exception e) {
-                logger.error("Error during graceful shutdown", e);
-                future.completeExceptionally(e);
-            } finally {
-                // 关闭执行器
-                executor.shutdown();
-                try {
-                    // 等待执行器关闭
-                    if (!executor.awaitTermination(2, java.util.concurrent.TimeUnit.SECONDS)) {
-                        logger.warn("Executor did not terminate in the specified time.");
-                        executor.shutdownNow();
+                    logger.debug("Sending TERM to process");
+                    if (process != null) {
+                        process.destroy();
+                        // Wait for the process to exit
+                        try {
+                            process.waitFor();
+                            if (process.exitValue() != 0) {
+                                logger.warn("Process terminated with code " + process.exitValue());
+                            }
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            logger.warn("Process wait interrupted", e);
+                        }
+                    } else {
+                        logger.warn("Process not started");
                     }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    executor.shutdownNow();
+
+                    // The Threads are blocked on readLine so disposeGracefully would not
+                    // interrupt them, therefore we issue an async hard dispose.
+                    inboundScheduler.dispose();
+                    errorScheduler.dispose();
+                    outboundScheduler.dispose();
+
+                    logger.debug("Graceful shutdown completed");
+                    future.complete(null);
+                } catch (Exception e) {
+                    logger.error("Error during graceful shutdown", e);
+                    future.completeExceptionally(e);
                 }
             }
-        }, executor);
+        });
 
         return future;
     }
@@ -740,17 +483,24 @@ public class StdioClientTransport implements McpClientTransport {
     public <T> T unmarshalFrom(Object data, TypeReference<T> typeRef) {
         return this.objectMapper.convertValue(data, typeRef);
     }
-
+    
     /**
      * Configures the ObjectMapper to handle non-standard getter methods.
-     *
+     * 
      * @param objectMapper the ObjectMapper to configure
      * @return the configured ObjectMapper
      */
     private ObjectMapper configureObjectMapper(ObjectMapper objectMapper) {
-        // In the JDK17 version, we don't modify the ObjectMapper
-        // Let's just return the original mapper to match the JDK17 behavior
-        return objectMapper;
+        // Create a copy of the ObjectMapper to avoid modifying the original
+        ObjectMapper configuredMapper = objectMapper.copy();
+        
+        // Configure visibility for methods without 'get' prefix
+        configuredMapper.setVisibility(com.fasterxml.jackson.annotation.PropertyAccessor.GETTER, 
+                                      com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY);
+        configuredMapper.setVisibility(com.fasterxml.jackson.annotation.PropertyAccessor.FIELD, 
+                                      com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY);
+        
+        return configuredMapper;
     }
 
 }

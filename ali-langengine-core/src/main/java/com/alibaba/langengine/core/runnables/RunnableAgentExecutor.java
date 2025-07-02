@@ -16,6 +16,7 @@
 package com.alibaba.langengine.core.runnables;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.langengine.core.agent.AgentAction;
 import com.alibaba.langengine.core.agent.AgentFinish;
 import com.alibaba.langengine.core.agent.AgentNextStep;
@@ -52,6 +53,7 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
      */
     private List<BaseTool> tools;
 
+    private BaseTool asyncRecordTool;
     /**
      * name to tool map
      */
@@ -132,6 +134,9 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
     private RunnableHashMap invoke(RunnableHashMap input, RunnableConfig config, Consumer<Object> chunkConsumer) {
         try {
             List<AgentAction> intermediateSteps = new ArrayList<>();
+            if(config != null && CollectionUtils.isNotEmpty(config.getAsyncFinishedAction())) {
+                intermediateSteps.addAll(config.getAsyncFinishedAction());
+            }
 
             int iterations = 0;
             double timeElapsed = 0.0d;
@@ -174,7 +179,6 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
                         }
                     }
                 }
-
                 intermediateSteps.add(nextAction);
 
                 iterations += 1;
@@ -189,15 +193,23 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
     }
 
     private AgentFinish returnStoppedResponse() {
-//        if (FORCE_STOPPING_METHOD.equals(earlyStoppingMethod)) {
-        Map<String, Object> returnValues = new HashMap<>();
-        returnValues.put(OUTPUT_KEY, !StringUtils.isEmpty(forceStoppingContent) ? forceStoppingContent : DEFAULT_FORCE_STOPPING_CONTENT);
-        AgentFinish agentFinish = new AgentFinish();
-        agentFinish.setReturnValues(returnValues);
-        return agentFinish;
-//        } else {
-//            throw new RuntimeException("Got unsupported early_stopping_method `" + earlyStoppingMethod + "`");
-//        }
+        return returnStoppedResponse(null);
+    }
+
+    private AgentFinish returnStoppedResponse(String response) {
+        if (!StringUtils.isEmpty(response)) {
+            Map<String, Object> returnValues = new HashMap<>();
+            returnValues.put(OUTPUT_KEY, response);
+            AgentFinish agentFinish = new AgentFinish();
+            agentFinish.setReturnValues(returnValues);
+            return agentFinish;
+        } else {
+            Map<String, Object> returnValues = new HashMap<>();
+            returnValues.put(OUTPUT_KEY, !StringUtils.isEmpty(forceStoppingContent) ? forceStoppingContent : DEFAULT_FORCE_STOPPING_CONTENT);
+            AgentFinish agentFinish = new AgentFinish();
+            agentFinish.setReturnValues(returnValues);
+            return agentFinish;
+        }
     }
 
     /**
@@ -230,6 +242,31 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
     public AgentNextStep takeNextStep(List<AgentAction> intermediateSteps, RunnableHashMap input, RunnableConfig config, Consumer<Object> chunkConsumer) {
         input.put(INTERMEDIATE_STEPS_KEY, intermediateSteps);
         AgentNextStep agentNextStep;
+
+        //异步判断是否需要中断
+        if(CollectionUtils.isNotEmpty(intermediateSteps) && config.isAsyncInterrupt()) {
+            AgentAction lastAction = intermediateSteps.get(intermediateSteps.size() - 1);
+            log.warn("RunnableAgentExecutor asyncInterrupt, lastAction: {}", JSONObject.toJSONString(lastAction));
+            config.getExtraAttributes().put("agentFinalResult", lastAction);
+            asyncRecordTool.invoke(input, config);
+
+            Map<String, Object> returnValues = new HashMap<>();
+
+            String output;
+            if(CollectionUtils.isNotEmpty(lastAction.getActions())) {
+                output = lastAction.getActions().get(0).getObservation();
+            } else {
+                output = lastAction.getObservation();
+            }
+
+            returnValues.put(OUTPUT_KEY, output);
+            AgentFinish agentFinish = new AgentFinish();
+            agentFinish.setReturnValues(returnValues);
+            agentFinish.setLog(output);
+
+            return agentFinish;
+        }
+
         if(chunkConsumer != null) {
             if(config != null && config.isStreamLog()) {
                 agentNextStep = agent.streamLog(input, config, chunkConsumer);
@@ -243,6 +280,11 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
             return null;
         }
         if(agentNextStep instanceof AgentFinish) {
+            //执行完成，异步请求持久化一条整体数据
+            if(Objects.nonNull(config) && config.isAsync() && Objects.nonNull(asyncRecordTool)) {
+                config.getExtraAttributes().put("agentFinalResult", agentNextStep);
+                asyncRecordTool.invoke(input, config);
+            }
             return agentNextStep;
         }
 
@@ -250,33 +292,47 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
         log.info("RunnableAgentExecutor takeNextStep is {}", JSON.toJSONString(agentAction));
 
         if(!CollectionUtils.isEmpty(agentAction.getActions())) {
+            boolean finished = false;
+            AgentFinish agentFinish = new AgentFinish();
+
             for (AgentAction childAction : agentAction.getActions()) {
                 String toolName = containToolName(childAction.getTool());
                 if (StringUtils.isEmpty(toolName)) {
-                    AgentFinish agentFinish = returnStoppedResponse();
-                    return agentFinish;
+                    String error = String.format("Call llm tool_calls is %s, but the toolName is not exists.", childAction.getTool());
+                    log.info(error);
+                    return returnStoppedResponse(!StringUtils.isEmpty(childAction.getLog()) ? childAction.getLog() : error);
                 }
                 BaseTool tool = nameToToolMap.get(toolName);
 
                 ToolExecuteResult toolExecuteResult = tool.invoke(childAction.getToolInput(), config, chunkConsumer);
                 if (toolExecuteResult == null) {
-                    log.error("tool invoke error");
-                    AgentFinish agentFinish = returnStoppedResponse();
-                    return agentFinish;
-                }
-                if (toolExecuteResult.isInterrupted()) {
-                    Map<String, Object> returnValues = new HashMap<>();
-                    returnValues.put(OUTPUT_KEY, toolExecuteResult.getOutput());
-                    AgentFinish agentFinish = new AgentFinish();
-                    agentFinish.setReturnValues(returnValues);
-                    agentFinish.setLog(toolExecuteResult.getOutput());
-                    return agentFinish;
+                    log.error("tool invoke response error");
+                    return returnStoppedResponse();
                 }
 
                 if (!CollectionUtils.isEmpty(toolExecuteResult.getNextTools())) {
                     childAction.setNextTools(toolExecuteResult.getNextTools());
                 }
                 childAction.setObservation(toolExecuteResult.getOutput());
+
+                if (toolExecuteResult.isInterrupted()) {
+                    finished = true;
+                    Map<String, Object> returnValues = new HashMap<>();
+                    returnValues.put(OUTPUT_KEY, toolExecuteResult.getOutput());
+                    agentFinish = new AgentFinish();
+                    agentFinish.setReturnValues(returnValues);
+                    agentFinish.setLog(toolExecuteResult.getOutput());
+                    break;
+                }
+            }
+
+            if(Objects.nonNull(config) && config.isAsync() && Objects.nonNull(asyncRecordTool)) {
+                config.getExtraAttributes().put("agentNextStepResult", agentAction);
+                asyncRecordTool.invoke(input, config);
+            }
+
+            if(finished) {
+                return agentFinish;
             }
             return agentAction;
         } else {
@@ -293,6 +349,17 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
                 AgentFinish agentFinish = returnStoppedResponse();
                 return agentFinish;
             }
+
+            if (!CollectionUtils.isEmpty(toolExecuteResult.getNextTools())) {
+                agentAction.setNextTools(toolExecuteResult.getNextTools());
+            }
+            agentAction.setObservation(toolExecuteResult.getOutput());
+
+            if(Objects.nonNull(config) && config.isAsync() && Objects.nonNull(asyncRecordTool)) {
+                config.getExtraAttributes().put("agentNextStepResult", agentAction);
+                asyncRecordTool.invoke(input, config);
+            }
+
             if (toolExecuteResult.isInterrupted()) {
                 Map<String, Object> returnValues = new HashMap<>();
                 returnValues.put(OUTPUT_KEY, toolExecuteResult.getOutput());
@@ -302,10 +369,6 @@ public class RunnableAgentExecutor extends Runnable<RunnableHashMap, RunnableHas
                 return agentFinish;
             }
 
-            if (!CollectionUtils.isEmpty(toolExecuteResult.getNextTools())) {
-                agentAction.setNextTools(toolExecuteResult.getNextTools());
-            }
-            agentAction.setObservation(toolExecuteResult.getOutput());
             return agentAction;
         }
     }

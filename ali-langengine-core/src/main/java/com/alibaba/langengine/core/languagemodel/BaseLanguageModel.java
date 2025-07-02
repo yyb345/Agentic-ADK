@@ -122,7 +122,7 @@ public abstract class BaseLanguageModel<T> extends Runnable<RunnableInput, Runna
      * {"type": "function", "function": {"name": "the_function_to_call"}}
      * 如果您希望对于某一类问题，Function Calling 能够强制调用某个工具，可以设定tool_choice参数为{"type": "function", "function": {"name": "the_function_to_call"}}，其中the_function_to_call是您指定的工具函数名称。
      */
-    private String toolChoice = "auto";
+    private Object toolChoice = "auto";
 
 
     /**

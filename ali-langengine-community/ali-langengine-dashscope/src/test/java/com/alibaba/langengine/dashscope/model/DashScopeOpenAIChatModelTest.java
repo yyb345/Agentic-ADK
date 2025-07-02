@@ -41,6 +41,48 @@ public class DashScopeOpenAIChatModelTest {
     }
 
     @Test
+    public void test() {
+        DashScopeOpenAIChatModel llm = new DashScopeOpenAIChatModel();
+        llm.setMaxTokens(1024);
+
+        List<BaseMessage> messages = new ArrayList<>();
+
+        HumanMessage humanMessage = new HumanMessage();
+        humanMessage.setContent("今天杭州天气怎么样？");
+        messages.add(humanMessage);
+
+        List<FunctionDefinition> functions = new ArrayList<>();
+        FunctionDefinition functionDefinition = new FunctionDefinition();
+        functionDefinition.setName("get_current_weather");
+        functionDefinition.setDescription("Get the current weather in a given location.");
+        FunctionParameter functionParameter = new FunctionParameter();
+        functionParameter.setRequired(Arrays.asList(new String[] { "location" }));
+
+        Map<String, FunctionProperty> propertyMap = new HashMap<>();
+
+        FunctionProperty functionProperty = new FunctionProperty();
+        functionProperty.setType("string");
+        functionProperty.setDescription("The city and state, e.g. San Francisco, CA");
+        propertyMap.put("location", functionProperty);
+
+        functionProperty = new FunctionProperty();
+        functionProperty.setType("string");
+        List<String> enums = new ArrayList<>();
+        enums.add("celsius");
+        enums.add("fahrenheit");
+        functionProperty.setEnums(enums);
+        functionProperty.setDescription("The temperature unit.");
+        propertyMap.put("unit", functionProperty);
+
+        functionParameter.setProperties(propertyMap);
+        functionDefinition.setParameters(functionParameter);
+        functions.add(functionDefinition);
+
+        BaseMessage baseMessage = llm.run(messages, functions, null, null, null);
+        System.out.println("response:" + JSON.toJSONString(baseMessage));
+    }
+
+    @Test
     public void test_predict_function_call() {
         // success
         DashScopeOpenAIChatModel llm = new DashScopeOpenAIChatModel();

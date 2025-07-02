@@ -18,7 +18,6 @@ package com.alibaba.langengine.claude.model.service;
 import com.alibaba.langengine.claude.model.completion.ChatCompletionChunk;
 import com.alibaba.langengine.claude.model.completion.ChatCompletionRequest;
 import com.alibaba.langengine.claude.model.completion.ChatCompletionResult;
-import com.alibaba.langengine.core.model.fastchat.completion.CompletionChunk;
 import com.alibaba.langengine.core.model.fastchat.service.RetrofitInitService;
 import io.reactivex.Flowable;
 import lombok.Data;

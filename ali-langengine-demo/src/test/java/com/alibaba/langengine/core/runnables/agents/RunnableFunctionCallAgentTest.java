@@ -16,8 +16,6 @@
 package com.alibaba.langengine.core.runnables.agents;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.langengine.aidc.ai.model.ApiGatewayChatModel;
-import com.alibaba.langengine.aidc.ai.model.service.ApiGatewayModelType;
 import com.alibaba.langengine.core.messages.*;
 import com.alibaba.langengine.core.model.fastchat.completion.chat.FunctionDefinition;
 import com.alibaba.langengine.core.model.fastchat.completion.chat.FunctionParameter;
@@ -45,9 +43,9 @@ public class RunnableFunctionCallAgentTest extends BaseTest {
             "1. 当用户询问时，先确认下哪个城市。\n" +
             "2. 根据天气好坏，推荐适合的游玩地点。回复示例：\n" +
             "=====\n" +
-            "   -  \uD83C\uDF24 天气状况: <具体天气描述>\n" +
-            "   -  \uD83D\uDCCD 推荐地点: <适合该天气的游玩地点>\n" +
-            "   -  \uD83D\uDCA1 推荐理由: <简要说明为什么推荐该地点>\n" +
+            "   -  天气状况: <具体天气描述>\n" +
+            "   -  推荐地点: <适合该天气的游玩地点>\n" +
+            "   -  推荐理由: <简要说明为什么推荐该地点>\n" +
             "=====\n" +
             "\n" +
             "## 限制:\n" +

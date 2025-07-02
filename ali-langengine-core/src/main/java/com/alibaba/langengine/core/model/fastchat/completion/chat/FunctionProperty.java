@@ -15,6 +15,7 @@
  */
 package com.alibaba.langengine.core.model.fastchat.completion.chat;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -26,9 +27,15 @@ public class FunctionProperty {
 
     private String type;
     private String description;
+
+    @JsonProperty("default")
+    @JSONField(name = "default")
+    private Object defaultValue;
+
     private FunctionItem items;
 
     @JsonProperty("enum")
+    @JSONField(name = "enum")
     private List<String> enums;
 
     private Map<String, FunctionProperty> properties;

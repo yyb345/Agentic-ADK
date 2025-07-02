@@ -1,17 +1,5 @@
 /*
- * Copyright 2025 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2024 - 2024 the original author or authors.
  */
 package com.alibaba.langengine.modelcontextprotocol.client.transport;
 
@@ -23,6 +11,7 @@ import com.alibaba.langengine.modelcontextprotocol.spec.McpClientTransport;
 import com.alibaba.langengine.modelcontextprotocol.spec.McpError;
 import com.alibaba.langengine.modelcontextprotocol.spec.McpSchema;
 import com.alibaba.langengine.modelcontextprotocol.util.Assert;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,10 +57,10 @@ import java.util.function.Function;
  * both the SSE connection and individual POST requests.
  *
  * @author Christian Tzolov
- * @author aihe.ah
  * @see com.alibaba.langengine.modelcontextprotocol.spec.McpTransport
  * @see McpClientTransport
  */
+@Slf4j
 public class HttpClientSseClientTransport implements McpClientTransport {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpClientSseClientTransport.class);
@@ -413,9 +402,12 @@ public class HttpClientSseClientTransport implements McpClientTransport {
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/json");
-                    connection.setConnectTimeout(connectTimeoutMs);
+                    connection.setConnectTimeout(1200000);
                     connection.setDoOutput(true);
-                    
+                    connection.setReadTimeout(1200000);
+
+                    log.info("connection readTimeout is 1200000");
+
                     // Apply custom headers
                     for (Map.Entry<String, String> entry : headers.entrySet()) {
                         connection.setRequestProperty(entry.getKey(), entry.getValue());
