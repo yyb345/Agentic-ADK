@@ -16,11 +16,11 @@
 package com.alibaba.langengine.claude.model;
 
 /**
- * claude model contants
+ * claude model constants
  *
  * @author xiaoxuan.lp
  */
-public class ClaudeModelContants {
+public class ClaudeModelConstants {
 
     /**
      * Our most intelligent model

@@ -43,7 +43,7 @@ public class ClaudeChatModelTest {
     @Test
     public void test_run_3_haiku() {
         ClaudeChatModel llm = new ClaudeChatModel();
-        llm.setModel(ClaudeModelContants.CLAUDE_3_HAIKU_20240307);
+        llm.setModel(ClaudeModelConstants.CLAUDE_3_HAIKU_20240307);
         llm.setMaxTokens(1024);
         System.out.println("response:" + llm.predict("你是谁？"));
     }

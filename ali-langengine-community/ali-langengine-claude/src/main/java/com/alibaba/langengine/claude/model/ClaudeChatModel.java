@@ -77,7 +77,7 @@ public class ClaudeChatModel extends BaseChatModel<ChatCompletionRequest> {
     }
 
     public ClaudeChatModel(String token) {
-        setModel(ClaudeModelContants.CLAUDE_35_SONNET_20241022);
+        setModel(ClaudeModelConstants.CLAUDE_35_SONNET_20241022);
         service = new ClaudeService(ANTHROPIC_SERVER_URL, Duration.ofSeconds(Long.parseLong(ANTHROPIC_API_TIMEOUT)), true, token);
     }
 
