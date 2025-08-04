@@ -12,7 +12,27 @@
 </div>
 </h4>
 
-**[中文版说明](https://github.com/AIDC-AI/ali-langengine/blob/main/README_CN.md)**
+**[中文版说明](https://github.com/AIDC-AI/Agentic-ADK/blob/main/README_CN.md)**
+
+
+**[Agentic ADK](https://github.com/AIDC-AI/Agentic-ADK)**
+
+Agentic ADK is an Agent application development framework launched by Alibaba International AI Business, based on [Google-ADK](https://google.github.io/adk-docs/) and Ali-LangEngine. It is used for developing, constructing, evaluating, and deploying powerful, flexible, and controllable complex AI Agents. ADK aims to make Agent development simpler and more user-friendly, enabling developers to more easily build, deploy, and orchestrate various Agent applications ranging from simple tasks to complex collaborations.
+
+**Important features**
+* Based on the Google ADK interface, it strengthens core execution pathways such as streaming interaction and visualization debugging tools, enabling developers to efficiently develop Agent applications.
+* **Seamlessly integrates with Alibaba's International Multimodal Large Language Model, Ovis**, to achieve deep alignment and fusion of visual and textual information. This model is characterized by high performance and lightweight design, offering the following advantages for efficient development and deployment of multimodal Agents:
+    * **Outstanding Logical Reasoning**: By combining instruction fine-tuning and preference learning, the model's Chain-of-Thought (CoT) reasoning abilities are significantly enhanced, enabling it to better understand and execute complex instructions.
+    * **Precise Cross-Language Understanding and Recognition**: Beyond just Chinese and English, the model has improved text recognition (OCR) capabilities in multilingual environments and optimized the accuracy of structured data extraction from complex visual elements such as tables and charts.
+* Flexible **multi-agent framework**, supporting various execution modes such as synchronous, asynchronous, streaming, and parallel, and naturally integrating the A2A protocol.
+* Offers hundreds of API tools and introduces the MCP integration gateway.
+* **DeepResearch/RAG, ComputerUse, BrowserUse, Sandbox**, and other best practices for Agentic AI.
+* Implementation of context extension for agent conversations, including Session, Memory, Artifact, and more, with built-in short and long-term memory plugins.
+* Provides prompt automation tuning and security risk control-related agent examples.
+
+
+![架构图](https://zos-oss-ol.oss-cn-hangzhou.aliyuncs.com/data/be03cd4383682bd6e8095ebf8472a0d1.png)
+
 
 **Alibaba langengine**
 

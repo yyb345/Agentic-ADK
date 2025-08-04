@@ -12,6 +12,24 @@
 </div>
 </h4>
 
+**[Agentic ADK](https://github.com/AIDC-AI/Agentic-ADK)**
+
+Agentic ADK 是阿里国际AI Business推出基于 [Google-ADK](https://google.github.io/adk-docs/) 以及 Ali-LangEngine 的Agent应用开发框架，用于开发、构建、评估和部署功能强大、灵活且可控的复杂 AI Agent。ADK 旨在使Agent开发更简单友好，使开发者能够更轻松地构建、部署和编排从简单任务到复杂协作的各类Agent应用。
+
+**功能介绍**
+* 以Google ADK接口为基础，强化流式交互、可视化调试工具等核心执行链路，让开发者可以高效开发Agent应用。
+* 与**阿里国际多模态大语言模型 Ovis无缝对接**，实现视觉与文本信息的深度对齐与融合。该模型兼具高性能和轻量化的特点，并具备以下优势，实现高效多模态Agent的开发与部署：
+  * **卓越的逻辑推理**：结合指令微调与偏好学习，模型的思维链（Chain-of-Thought, CoT）推理能力得到显著增强，能够更好地理解和执行复杂指令。
+  * **精准的跨语言理解与识别**：不仅限于中英文，模型提升了在多语言环境下的文字识别（OCR）能力，并优化了从表格、图表等复杂视觉元素中进行结构化数据提取的精度。
+* 灵活的**多智能体框架**，支持同步、异步、流式、并行等多种执行模式，天然集成A2A协议。
+* 提供**上百个API工具**，并推出MCP集成网关。
+* **DeepResearch/RAG、ComputerUse、BrowserUse、Sandbox**等Agentic AI最佳实践。
+* 智能体会话的上下文扩展实现，包括Session、Memory、Artifact等等，内置长短记忆插件。
+* 提供Prompt自动化调优、安全风控相关代理样例。
+
+![架构图](https://zos-oss-ol.oss-cn-hangzhou.aliyuncs.com/data/be03cd4383682bd6e8095ebf8472a0d1.png)
+
+
 **[Alibaba langengine](https://github.com/AIDC-AI/ali-langengine)**
 
 阿里巴巴langengine是一个基于Java的AI应用开发框架。它赋予LLM两大核心能力：
