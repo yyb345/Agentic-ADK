@@ -1,0 +1,13 @@
+node_modules/
+coverage/
+dist/
+logs/
+run/
+
+*.sw*
+*.un~
+.tsbuildinfo
+.tsbuildinfo.*
+
+npm-debug.log
+yarn-error.log
