@@ -1,5 +1,6 @@
 
-# Alibaba langengine: an AI application development framework written in Java.
+# About
+Agentic ADK is an Agent application development framework launched by Alibaba International AI Business, based on Google-ADK and Ali-LangEngine.
 
 <h4 align="center">
 
