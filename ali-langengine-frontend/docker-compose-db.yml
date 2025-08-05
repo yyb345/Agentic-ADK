@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  # 数据库
+  ali-langengine-frontend-postgres:
+    image: postgres:16
+    restart: always
+    shm_size: 128mb # Docker 容器的共享内容大小默认只有 64mb（这对 postgres 来说不太够用）
+    healthcheck: # 为数据库提供健康检查，这样就能确保在数据库启动之后再启动后端服务
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE} # 这些环境变量都来自于 server/.env 文件
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./.data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432 # 把端口开放出去，这样就可以远程连接数据库（例如在本地使用数据库管理工具、本地开发）

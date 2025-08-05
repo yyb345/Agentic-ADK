@@ -1,0 +1,11 @@
+{
+  "extends": ["@umijs/lint/dist/config/stylelint", "stylelint-config-idiomatic-order"],
+  "rules": {
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["tailwind", "theme", "custom-variant"]
+      }
+    ]
+  }
+}

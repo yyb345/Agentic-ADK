@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  # 前端
+  ali-langengine-frontend-web:
+    build: ./web
+    ports:
+      - '80:80'
+    depends_on:
+      ali-langengine-frontend-server:
+        condition: service_started
+
+  # 后端
+  ali-langengine-frontend-server:
+    build: ./server
+    depends_on:
+      ali-langengine-frontend-postgres:
+        condition: service_healthy

@@ -1,0 +1,10 @@
+{
+  "extends": ["//"],
+  "ui": "tui",
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

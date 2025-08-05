@@ -1,0 +1,12 @@
+node_modules
+dist
+
+server/logs
+server/run
+
+web/src/.umi
+web/src/.umi-production
+web/src/components/ui
+web/src/hooks/ui
+web/src/utils/ui
+web/src/utils/ui-lib
