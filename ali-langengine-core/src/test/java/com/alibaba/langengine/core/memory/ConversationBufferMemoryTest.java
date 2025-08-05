@@ -33,13 +33,13 @@ public class ConversationBufferMemoryTest {
         // success
         ConversationBufferMemory memory = new ConversationBufferMemory();
         memory.getChatMemory().addUserMessage("hi!");
-        memory.getChatMemory().addAIMessage("whats up?");
+        memory.getChatMemory().addAIMessage("what's up?");
         System.out.println(JSON.toJSONString(memory.loadMemoryVariables(new HashMap<>())));
 
         memory = new ConversationBufferMemory();
         memory.setReturnMessages(true);
         memory.getChatMemory().addUserMessage("hi!");
-        memory.getChatMemory().addAIMessage("whats up?");
+        memory.getChatMemory().addAIMessage("what's up?");
         System.out.println(JSON.toJSONString(memory.loadMemoryVariables(new HashMap<>())));
     }
 

@@ -25,12 +25,12 @@ import java.util.function.Function;
 @Getter
 public class PromptRegistration {
 
-    Prompt propmpt;
+    Prompt prompt;
 
     Function<GetPromptRequest, GetPromptResult> promptHandler;
 
-    public PromptRegistration(Prompt propmpt, Function<GetPromptRequest, GetPromptResult> promptHandler) {
-        this.propmpt = propmpt;
+    public PromptRegistration(Prompt prompt, Function<GetPromptRequest, GetPromptResult> promptHandler) {
+        this.prompt = prompt;
         this.promptHandler = promptHandler;
     }
 }

@@ -214,7 +214,7 @@ public abstract class DFlow<T> implements ValidClosure {
     }
 
     /**
-     * mock fucntion, return null as do not mock
+     * mock function, return null as do not mock
      *
      * @param mockFunc
      * @return

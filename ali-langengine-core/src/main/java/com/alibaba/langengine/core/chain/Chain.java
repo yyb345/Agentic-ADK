@@ -119,8 +119,8 @@ public abstract class Chain extends Runnable<RunnableInput, RunnableOutput> {
         Map<String, Object> inputs = new HashMap<>();
         inputs.put("question", question);
         inputs.put("input", question); // TODO 需要动态填充
-        Map<String, Object> repsonse = run(inputs, executionContext, consumer, extraAttributes);
-        return (String)repsonse.get("text");
+        Map<String, Object> response = run(inputs, executionContext, consumer, extraAttributes);
+        return (String)response.get("text");
     }
 
 
