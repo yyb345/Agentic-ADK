@@ -40,7 +40,7 @@ public class XinghuoConfiguration {
     public static String XINGHUO_API_KEY = WorkPropertiesUtils.get("xinghuo_api_key");
 
     /**
-     * 星火-apisercret
+     * 星火-apisecret
      */
     public static String XINGHUO_API_SECRET = WorkPropertiesUtils.get("xinghuo_api_secret");
 }

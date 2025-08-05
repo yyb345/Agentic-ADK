@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * LangeEngine - Tair向量检索支持
+ * LangEngine - Tair向量检索支持
  *
  * https://help.aliyun.com/document_detail/453885.html#section-wu6-ph2-h7j
  * https://kvstore.console.aliyun.com/Redis/instance/cn-hangzhou/r-bp1mg3ubm7n9dbgykx/Normal/VPC/tair.rdb.1g/info

@@ -81,7 +81,7 @@ public class WebSocketListener extends okhttp3.WebSocketListener {
         StringBuilder builder = new StringBuilder("host: ").append(url.getHost()).append("\n").
                 append("date: ").append(date).append("\n").
                 append("GET ").append(url.getPath()).append(" HTTP/1.1");
-        //获得signatue
+        //获得signature
         Charset charset = Charset.forName("UTF-8");
         Mac mac = Mac.getInstance("hmacsha256");
         SecretKeySpec sp = new SecretKeySpec(apisecret.getBytes(charset), "hmacsha256");

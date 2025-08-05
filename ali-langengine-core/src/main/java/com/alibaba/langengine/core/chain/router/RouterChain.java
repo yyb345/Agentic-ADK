@@ -31,10 +31,10 @@ import java.util.Map;
 @Data
 public abstract class RouterChain extends Chain {
 
-    private static final String[] OUPUT_KEYS = new String[] { "destination", "next_inputs" };
+    private static final String[] OUTPUT_KEYS = new String[] { "destination", "next_inputs" };
 
     public List<String> getOutputKeys() {
-        return Arrays.asList(OUPUT_KEYS);
+        return Arrays.asList(OUTPUT_KEYS);
     }
 
     public Route route(Map<String, Object> inputs) {

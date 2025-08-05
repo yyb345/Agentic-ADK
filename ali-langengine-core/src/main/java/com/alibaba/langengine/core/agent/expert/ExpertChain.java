@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 public class ExpertChain extends LLMChain {
 
     /**
-     * ExpertPromting
+     * ExpertPrompting
      */
     private BasePromptTemplate expertPrompt;
 

@@ -114,10 +114,10 @@ public class SequentialPlannerOutputParser extends AgentOutputParser<AgentNextSt
                                     .replace("_OUTPUT", "_output");
                         }
                         StringWriter writer = new StringWriter();
-                        Map<String, Object> allVaribles = new HashMap<>();
-                        allVaribles.putAll(contextVariables);
-                        allVaribles.putAll(appendToResultValues);
-//                        VelocityContext velocityContext = new VelocityContext(allVaribles);
+                        Map<String, Object> allVariables = new HashMap<>();
+                        allVariables.putAll(contextVariables);
+                        allVariables.putAll(appendToResultValues);
+//                        VelocityContext velocityContext = new VelocityContext(allVariables);
 //                        Velocity.evaluate(velocityContext, writer, tplName, content);
                         String output = writer.getBuffer().toString();
 
