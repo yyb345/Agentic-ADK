@@ -116,10 +116,10 @@ public class InitEntry {
             return callbacks.get(callType).apply(params, id);
         }catch (Throwable t){
             //转发也没有，可能目标ip的机器已经下线，如果要求local，去除local再拯救一下
-            ContextStack c = DFlow.getStoreage().getContext(id);
+            ContextStack c = DFlow.getStorage().getContext(id);
             if(c.isLocal()) {
                 c.removeLocal();
-                DFlow.getStoreage().putContext(id, c);
+                DFlow.getStorage().putContext(id, c);
             }else {
                 DFlow.globalError(id, t);
             }
@@ -129,7 +129,7 @@ public class InitEntry {
     }
 
     public static void transferCall(String callType, String params, String id) throws RetryException,Exception {
-        ContextStack stack = DFlow.getStoreage().getContext(id);
+        ContextStack stack = DFlow.getStorage().getContext(id);
 
         if (gRequestResender == null) {
             throw new Exception("DFlow is not inited! InitEntry.setRequestResender earlier");

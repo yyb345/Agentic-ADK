@@ -56,12 +56,12 @@ public class DFlowFlatmap<T, R> extends AbstractDFlowWithUpstream<T,R> {
 
             contextStack.setStatus(STATUS_SUB);
             //mapper后 context可能有变化，在触发子流前更新
-            DFlow.getStoreage().putContext(contextStack.getId(),contextStack);
+            DFlow.getStorage().putContext(contextStack.getId(),contextStack);
 
             //flatmap的下一级节点很有可能未完全初始化完毕，未初始化完时，后续链路都不能保证每台机器都有代码，要local
             if(!isAllInited(getIDName(),initInnerFlow.getIDName())){
                 contextStack.setLocal();
-                getStoreage().putContext(contextStack.getId(),contextStack);
+                getStorage().putContext(contextStack.getId(),contextStack);
             }
             //设置内部流的parentFlowStep,以便检查是不是当前应该处理的节点检查通过。
             // null也让过先注释掉

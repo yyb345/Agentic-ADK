@@ -73,7 +73,7 @@ public class LocalTest {
             DFlow.call(entry, "projectId", "requestId111111");
 
             System.in.read();
-            System.out.println(JSON.toJSONString(DFlow.getStoreage().getContext("requestId111111")));
+            System.out.println(JSON.toJSONString(DFlow.getStorage().getContext("requestId111111")));
             //DFlow.replayStep("ttt","2-2->last-last->null",true);
             ;
         }catch (Exception e){

@@ -44,11 +44,11 @@ public class DFlowCall extends DFlow<String> implements BiFunction<String,String
     public Boolean apply(String stringObjectMap, String traceId) throws Exception {
         //try {
             //如是第一个请求，入口先准备栈重新开始
-            if (getStoreage().getContext(traceId) == null) {
+            if (getStorage().getContext(traceId) == null) {
                 call(traceId);
                 onReturn(getOrCreateCurrent(traceId), stringObjectMap);
             } else {//如果不是第一个请求，需轮到自己
-                ContextStack contextStack = getStoreage().getContext(traceId);
+                ContextStack contextStack = getStorage().getContext(traceId);
                 if (!getIDName().equals(contextStack.getName())) {
                     throw new InvalidCallException();
                 }

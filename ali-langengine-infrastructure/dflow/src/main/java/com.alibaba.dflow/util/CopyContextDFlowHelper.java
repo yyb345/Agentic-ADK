@@ -30,7 +30,7 @@ public class CopyContextDFlowHelper implements ValidClosure {
         innerEntry = DFlow.fromCall("DFlow_Agent_Tool" + name).id("DFlow_Agent_Tool" + name)
             .map((c, x) -> {
                 String upperId = removeLastInner(c.getId());
-                ContextStack ctx = DFlow.getStoreage().getContext(upperId);
+                ContextStack ctx = DFlow.getStorage().getContext(upperId);
                 for(String key:ctx.getGlobal().keySet()){
                     if(!nonInheritGlobalKeys.contains(key)){
                         c.getGlobal().put(key, ctx.getGlobal().get(key));

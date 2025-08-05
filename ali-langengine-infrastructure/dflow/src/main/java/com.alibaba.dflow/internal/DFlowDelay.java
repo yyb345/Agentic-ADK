@@ -58,7 +58,7 @@ public class DFlowDelay<T> extends DFlow<T> implements BiFunction<String, String
     }
 
     private void resumeInner(String idname, String traceId) throws UserException {
-        ContextStack ctx = DFlow.getStoreage().getContext(traceId);
+        ContextStack ctx = DFlow.getStorage().getContext(traceId);
         if (ctx == null || ctx.getStack().peek() == null) {
             throw (new RuntimeException("When resume delaydflow, traceId:" + traceId + " is not exist"));
         }

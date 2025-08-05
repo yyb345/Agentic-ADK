@@ -161,11 +161,11 @@ public class DFlowMultiCall extends DFlow<InnerList> implements Function3<Intege
     public Boolean apply(Integer index,String stringObjectMap,String traceId) throws Exception {
         //try {
             //如是第一个请求，入口先准备栈重新开始
-            if(getStoreage().getContext(traceId) == null) {
+            if(getStorage().getContext(traceId) == null) {
                 call(traceId);
                 arrive(getOrCreateCurrent(traceId),stringObjectMap,index);
             }else{//如果不是第一个请求，需轮到自己
-                ContextStack contextStack = getStoreage().getContext(traceId);
+                ContextStack contextStack = getStorage().getContext(traceId);
                 //  DFlowZip和DFlowOr实现直接未持久化地 用各种节点组装，导致MultiCall时的name不对了，暂不检查，交给下一个节点做判重处理。
                 //if(!getIDName().equals(contextStack.getName())){
                 //    logger.warn("This step is already finished!@"+traceId);

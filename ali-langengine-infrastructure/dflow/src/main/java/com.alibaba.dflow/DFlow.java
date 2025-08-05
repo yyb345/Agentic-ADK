@@ -90,7 +90,7 @@ public abstract class DFlow<T> implements ValidClosure {
     }
 
     public static void replayStep(String traceId, String stepName, boolean onlyThisStep) throws UserException {
-        ContextStack c = getStoreage().getContext(traceId);
+        ContextStack c = getStorage().getContext(traceId);
         c.getStack();
         while (!c.getStack().pop().getName().equals(stepName)) {
             ;
@@ -102,7 +102,7 @@ public abstract class DFlow<T> implements ValidClosure {
             c.setNoStorage();
         } else {
             //持久化
-            getStoreage().putContext(traceId, c);
+            getStorage().putContext(traceId, c);
         }
         thisNode.callAfterStackBuild(c);
     }
@@ -112,7 +112,7 @@ public abstract class DFlow<T> implements ValidClosure {
     }
 
     public static ContextNode checkStatus(String traceId, String debugName) {
-        ContextStack s = getStoreage().getContext(traceId);
+        ContextStack s = getStorage().getContext(traceId);
         if (s != null) {
             ContextNode r = s.findNodeByDebugName(debugName);
             if (r != null) {
@@ -134,7 +134,7 @@ public abstract class DFlow<T> implements ValidClosure {
     }
 
     public static ContextNode getNodeByName(String traceId, String name) {
-        ContextStack s = getStoreage().getContext(traceId);
+        ContextStack s = getStorage().getContext(traceId);
         if (s != null) {
             for (ContextNode r : s.getStack()) {
                 if (StringUtils.equals(r.getName(), name)) {
@@ -655,7 +655,7 @@ public abstract class DFlow<T> implements ValidClosure {
 
     public static final void call(Entry callEntry, String param, String traceId) throws Exception {
         if (callEntry.getDflowname() == null) {
-            ContextStack currentState = getStoreage().getContext(traceId);
+            ContextStack currentState = getStorage().getContext(traceId);
             if (currentState == null) {
                 throw new Exception(
                     "Init call must use Entry get from PipeLineInfo(created by DFlow.init()):" + traceId);
@@ -774,7 +774,7 @@ public abstract class DFlow<T> implements ValidClosure {
         });
     }
 
-    private static GlobalStoreInterface gloabl = new GlobalStoreInterface() {
+    private static GlobalStoreInterface global = new GlobalStoreInterface() {
 
         @Override
         public Long incr(String key) {
@@ -812,27 +812,27 @@ public abstract class DFlow<T> implements ValidClosure {
         }
     };
 
-    public static void setGloablStorage(GlobalStoreInterface storeage) {
-        DFlow.gloabl = new RetryProtectedGlobalStoreInterface(storeage);
+    public static void setGlobalStorage(GlobalStoreInterface storage) {
+        DFlow.global = new RetryProtectedGlobalStoreInterface(storage);
     }
 
     public static void setDelayManager(DFlowDelayManager delayManager){
         DFlowDelay.setDFlowDelayManager(delayManager);
     }
 
-    public static ContextStoreInterface getStoreage() {
-        return storeage;
+    public static ContextStoreInterface getStorage() {
+        return storage;
     }
 
     protected static GlobalStoreInterface getGlobalStorage() {
-        return gloabl;
+        return global;
     }
 
-    public static void setStoreage(ContextStoreInterface storeage) {
-        DFlow.storeage = new RetryProtectedContentStoreInterface(new ContextStoreInterface() {
+    public static void setStorage(ContextStoreInterface storage) {
+        DFlow.storage = new RetryProtectedContentStoreInterface(new ContextStoreInterface() {
             @Override
             public ContextStack getContext(String traceId) {
-                return storeage.getContext(traceId);
+                return storage.getContext(traceId);
             }
 
             @Override
@@ -840,17 +840,17 @@ public abstract class DFlow<T> implements ValidClosure {
                 if (context.isNoStorage()) {
                     return;
                 }
-                storeage.putContext(key, context);
+                storage.putContext(key, context);
             }
 
             @Override
             public void expireContext(String traceId) {
-                storeage.expireContext(traceId);
+                storage.expireContext(traceId);
             }
 
             @Override
             public void removeContext(String traceId) {
-                storeage.removeContext(traceId);
+                storage.removeContext(traceId);
             }
         });
     }
@@ -858,7 +858,7 @@ public abstract class DFlow<T> implements ValidClosure {
     /**
      * 分布式存储，应该设置为rdb之类的
      */
-    private static ContextStoreInterface storeage;
+    private static ContextStoreInterface storage;
 
     protected ContextStack getOrCreateCurrent(String traceId) throws PersistentException {
         if (traceId == null) {
@@ -1011,7 +1011,7 @@ public abstract class DFlow<T> implements ValidClosure {
         }
 
         //初始化次数
-        gloabl.keepAlive(getIDName());
+        global.keepAlive(getIDName());
         STEPS.put(getIDName(), this);
 
         currentPipeLineInfo = new PipeLineInfo();
@@ -1029,13 +1029,13 @@ public abstract class DFlow<T> implements ValidClosure {
         DFlow.traceId.set(traceId);
         for (Pattern p : g_pattern) {
             if (p.matcher(traceId).find()) {
-                error(getOrCreateCurrent(traceId), new Exception("traceId is ommited by pattern:" + p.pattern()));
+                error(getOrCreateCurrent(traceId), new Exception("traceId is omitted by pattern:" + p.pattern()));
                 return;
             }
         }
 
         //保护同一个节点同时处理，极端情况可能同时走过来，需保证代码自己幂等
-        ContextStack c = getStoreage().getContext(traceId);
+        ContextStack c = getStorage().getContext(traceId);
         if (c != null && c.getStack().peek() != null && STATUS_BEGIN.equals(c.getStack().peek().getStatus())) {
             logger.error("received duplicated call,already started:" + traceId + "@" + getIDName());
             return;
@@ -1077,7 +1077,7 @@ public abstract class DFlow<T> implements ValidClosure {
         InternalHelper.rebuildNewStack(contextStack, getIDName(), debugName);
 
         //持久化
-        getStoreage().putContext(contextStack.getId(), contextStack);
+        getStorage().putContext(contextStack.getId(), contextStack);
         if (g_testMode && contextStack.isMock() && mockFunc != null) {
             try {
                 T mockResult = mockFunc.apply(contextStack);
@@ -1099,7 +1099,7 @@ public abstract class DFlow<T> implements ValidClosure {
             }
         } catch (RetryException e) {
             InternalHelper.setStatus(contextStack, ContextStack.STATUS_RETRY + ":" + e.getMessage());
-            getStoreage().putContext(contextStack.getId(), contextStack);
+            getStorage().putContext(contextStack.getId(), contextStack);
             throw e;
         } catch (Throwable t) {
             throw new UserException(t);
@@ -1119,16 +1119,16 @@ public abstract class DFlow<T> implements ValidClosure {
             ContextStack contextStack = getOrCreateCurrent(traceId);
             contextStack.setFinished();
             InternalHelper.setNextStep(contextStack, "TERMINATED");
-            getStoreage().putContext(contextStack.getId(), contextStack);
-            getStoreage().expireContext(contextStack.getId());
+            getStorage().putContext(contextStack.getId(), contextStack);
+            getStorage().expireContext(contextStack.getId());
             return;
         }
-        ContextStack stack = getStoreage().getContext(traceId);
+        ContextStack stack = getStorage().getContext(traceId);
         /*改到flatmap中做此逻辑
         //在异步模式且下一级flow已经初始化好的情况下一步调用，
         //if(!isAllInited(getIDName(),nextStepId)){
         //    stack.setLocal();
-        //    getStoreage().putContext(traceId,stack);
+        //    getStorage().putContext(traceId,stack);
         //}
         */
 
@@ -1148,7 +1148,7 @@ public abstract class DFlow<T> implements ValidClosure {
         } else {
             //记录下一次step
             InternalHelper.setNextStep(stack, nextStepId);
-            getStoreage().putContext(traceId, stack);
+            getStorage().putContext(traceId, stack);
         }
 
         if (allAsync
@@ -1191,7 +1191,7 @@ public abstract class DFlow<T> implements ValidClosure {
         CallerMessage m = JSON.parseObject(message, CallerMessage.class);
         DFlow flow = STEPS.get(m.getName());
 
-        ContextStack contextStack = getStoreage().getContext(m.getTraceId());
+        ContextStack contextStack = getStorage().getContext(m.getTraceId());
 
         //local的call尝试发回去
         if (contextStack.isLocal() && !StringUtils.equals(InternalHelper.getIp(), contextStack.getIP())) {
@@ -1200,15 +1200,15 @@ public abstract class DFlow<T> implements ValidClosure {
             }else{
                 //转发也没有，可能目标ip的机器已经下线，如果要求local，去除local再拯救一下
                 contextStack.removeLocal();
-                DFlow.getStoreage().putContext(m.getTraceId(), contextStack);
+                DFlow.getStorage().putContext(m.getTraceId(), contextStack);
                 throw new RetryException("transfer local back failed,remove local&retry@" + m.getTraceId());
             }
         }
 
         if (flow == null) {
-            List<String> ips = (gloabl.getIPs(m.getName()));
+            List<String> ips = (global.getIPs(m.getName()));
             if (ips == null || ips.size() == 0) {
-                if (gloabl.getAlived(STEPS.keys().nextElement()) == 0) {
+                if (global.getAlived(STEPS.keys().nextElement()) == 0) {
                     throw new RetryException("System not inited");
                 }
                 throw new PipeLineNotInitedOnMachineException();
@@ -1298,7 +1298,7 @@ public abstract class DFlow<T> implements ValidClosure {
     protected void onReturn(ContextStack context, T t) throws RetryException, UserException {
         InternalHelper.setResultAndStatus(context, t, ContextStack.STATUS_END);
         //设好值后持久化，触发下一step
-        getStoreage().putContext(context.getId(), context);
+        getStorage().putContext(context.getId(), context);
 
         //触发回调
         stepHandlers.forEach(h -> h.onStepAfter(context));
@@ -1311,12 +1311,12 @@ public abstract class DFlow<T> implements ValidClosure {
     }
 
     protected static void globalError(String traceId, Throwable t) {
-        ContextStack contextStack = DFlow.getStoreage().getContext(traceId);
+        ContextStack contextStack = DFlow.getStorage().getContext(traceId);
         logger.error("DFlow SystemError:", t);
         if (contextStack != null) {
             contextStack.appendError(t);
             try {
-                DFlow.getStoreage().putContext(traceId, contextStack);
+                DFlow.getStorage().putContext(traceId, contextStack);
             } catch (PersistentException e) {
                 logger.error("SystemError return failed@" + traceId, t);
             }
@@ -1331,8 +1331,8 @@ public abstract class DFlow<T> implements ValidClosure {
         //子流程结束处理
         if(t instanceof EndException){
             context.setFinished();
-            getStoreage().putContext(context.getId(), context);
-            getStoreage().expireContext(context.getId());
+            getStorage().putContext(context.getId(), context);
+            getStorage().expireContext(context.getId());
             return;
         }
 
@@ -1344,7 +1344,7 @@ public abstract class DFlow<T> implements ValidClosure {
             context.getStack().peek().setStatus(ContextStack.STATUS_ERROR);
             context.appendError(t);
             //context.getStack().peek().put("Error:",t.getClass().toString()+"|"+ t.getMessage());
-            getStoreage().putContext(context.getId(), context);
+            getStorage().putContext(context.getId(), context);
         }
         if (t instanceof RetryException) {
             throw (RetryException)t;
@@ -1381,8 +1381,8 @@ public abstract class DFlow<T> implements ValidClosure {
      * @return
      */
     protected static boolean isAllInited(String thisStepIDname, String flowStepName) {
-        int parentCount = gloabl.getAlived(thisStepIDname);
-        return parentCount == gloabl.getAlived(flowStepName);
+        int parentCount = global.getAlived(thisStepIDname);
+        return parentCount == global.getAlived(flowStepName);
     }
 
     public static StackTraceElement getCallingPositionOriginal() {
@@ -1398,11 +1398,11 @@ public abstract class DFlow<T> implements ValidClosure {
     }
 
     private ContextStack getOrCreateCurrent(String traceId, boolean forceCreate) throws PersistentException {
-        ContextStack c = getStoreage().getContext(traceId);
+        ContextStack c = getStorage().getContext(traceId);
         if (c == null && forceCreate) {
             c = new ContextStack();
             c.setId(traceId);
-            getStoreage().putContext(traceId, c);
+            getStorage().putContext(traceId, c);
         }
         return c;
     }
@@ -1470,8 +1470,8 @@ public abstract class DFlow<T> implements ValidClosure {
     ) {
         setSubscribableChannel(channel);
         setRequestResender(resender);
-        setGloablStorage(globalStoreInterface);
-        setStoreage(contextStoreInterface);
+        setGlobalStorage(globalStoreInterface);
+        setStorage(contextStoreInterface);
     }
 
     public static void globalInitForTest() {
@@ -1484,7 +1484,7 @@ public abstract class DFlow<T> implements ValidClosure {
                 resume(idname, traceId);
             }
         });
-        DFlow.setGloablStorage(new GlobalStoreInterface() {
+        DFlow.setGlobalStorage(new GlobalStoreInterface() {
             private ConcurrentHashMap<String, AtomicLong> counter = new ConcurrentHashMap<>();
             private ConcurrentHashMap<String, String> m = new ConcurrentHashMap<>();
 
@@ -1549,7 +1549,7 @@ public abstract class DFlow<T> implements ValidClosure {
             }
         });
 
-        DFlow.setStoreage(new ContextStoreInterface() {
+        DFlow.setStorage(new ContextStoreInterface() {
 
             ConcurrentHashMap<String, String> m = new ConcurrentHashMap<>();
 
