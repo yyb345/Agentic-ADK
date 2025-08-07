@@ -41,7 +41,7 @@ public class VectorStoreRetrieverMemoryTest {
         Map<String, Object> outputs = new HashMap<>();
 
         inputs.put("input", "My favorite food is pizza");
-        outputs.put("output", "thats good to know");
+        outputs.put("output", "that's good to know");
         memory.saveContext(inputs, outputs);
 
         inputs.put("input", "My favorite sport is soccer");

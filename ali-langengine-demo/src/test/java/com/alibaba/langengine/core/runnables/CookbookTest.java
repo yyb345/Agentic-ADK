@@ -545,7 +545,7 @@ public class CookbookTest extends BaseTest {
         RunnableHashMap input = new RunnableHashMap() {{
             put("question", "how do I call OpenAI?");
 //            put("question", "how do I use LangChain?");
-//            put("question", "whats 2 + 2");
+//            put("question", "what's 2 + 2");
         }};
         Object runnableOutput = full_chain.invoke(input);
         System.out.println(JSON.toJSONString(runnableOutput));

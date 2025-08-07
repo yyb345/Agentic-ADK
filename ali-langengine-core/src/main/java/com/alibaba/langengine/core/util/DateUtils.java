@@ -577,16 +577,16 @@ public class DateUtils {
 		if (StringUtils.isBlank(pattern)) {
 			pattern = YYYY_MM_DD_HH_MM_SS;
 		}
-		SimpleDateFormat formater = new SimpleDateFormat(pattern);
-		return formater.format(date);
+		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+		return formatter.format(date);
 	}
 
 	public static String formatMinute(Date date) {
 		if (date == null) {
 			return "";
 		}
-		SimpleDateFormat formater = new SimpleDateFormat(YYYY_MM_DD_HH_MM);
-		return formater.format(date);
+		SimpleDateFormat formatter = new SimpleDateFormat(YYYY_MM_DD_HH_MM);
+		return formatter.format(date);
 	}
 
 	/**

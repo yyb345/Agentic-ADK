@@ -62,7 +62,7 @@ public class ToolConfiguration {
     /**
      * google cse id
      *
-     * 参考：在Programmable Search Enginge (https://programmablesearchengine.google.com/controlpanel/create)中获取GOOGLE_CSE_ID
+     * 参考：在Programmable Search Engine (https://programmablesearchengine.google.com/controlpanel/create)中获取GOOGLE_CSE_ID
      */
     public static String GOOGLE_CSE_ID = WorkPropertiesUtils.get("google_cse_id");
 

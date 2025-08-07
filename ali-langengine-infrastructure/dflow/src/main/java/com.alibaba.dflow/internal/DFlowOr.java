@@ -59,21 +59,21 @@ public class DFlowOr<R> extends DFlow<R> implements ValidClosure{
             context.setStatus(STATUS_SUB);
             String startId = context.getId();
             //设置当前进度为multicall， trigger后持久化了但是context没变需要重新读取
-            getStoreage().putContext(startId,context);
+            getStorage().putContext(startId,context);
             multiCall.call(startId);
-            context = getStoreage().getContext(startId);
+            context = getStorage().getContext(startId);
             String[] childTaskIds = new String[triggers.length];
             for(int i = 0; i < triggers.length; i++){
                 childTaskIds[i] = startId+"_"+ context.getStack().size() +"-"+i;
             }
 
             //先取全新的一份
-            ContextStack innerContext = getStoreage().getContext(startId);
+            ContextStack innerContext = getStorage().getContext(startId);
 
             //先save 在触发
             context.setChildTask(childTaskIds);
             //save
-            getStoreage().putContext(startId,context);
+            getStorage().putContext(startId,context);
 
             for (int i = 0; i < triggers.length; i++) {
                 innerContext.put("startId",startId);
@@ -81,7 +81,7 @@ public class DFlowOr<R> extends DFlow<R> implements ValidClosure{
                 innerContext.setId(childTaskIds[i]);
                 //build new childstack
                 innerContext.setStatus(STATUS_SUB);
-                getStoreage().putContext(innerContext.getId(),innerContext);
+                getStorage().putContext(innerContext.getId(),innerContext);
 
                 //设置当前进度为下一个流的入口，trigger后持久化了但是context没变需要重新读取
                 DFlow initInnerFlow = flows[i];
@@ -95,7 +95,7 @@ public class DFlowOr<R> extends DFlow<R> implements ValidClosure{
             }
 
             for(int i =0; i < triggers.length; i++){
-                ContextStack innerContext2 = getStoreage().getContext(childTaskIds[i]);
+                ContextStack innerContext2 = getStorage().getContext(childTaskIds[i]);
 
                 if(triggers[i] != null) {
                     triggers[i].accept(innerContext2);
@@ -144,7 +144,7 @@ public class DFlowOr<R> extends DFlow<R> implements ValidClosure{
                     if(n.getChildTask() != null){
                         String[] childids = n.getChildTask();
                         for(int j = 0;j<childids.length;j++){
-                            ContextStack s = getStoreage().getContext(childids[j]);
+                            ContextStack s = getStorage().getContext(childids[j]);
                             if(s != null) {
                                 globalsToMerge.add(s.getGlobal());
                             }

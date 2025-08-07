@@ -108,12 +108,12 @@
 //        }
 //
 //        //mapper后 context可能有变化，在触发子流前更新
-//        DFlow.getStoreage().putContext(contextStack.getId(),contextStack);
+//        DFlow.getStorage().putContext(contextStack.getId(),contextStack);
 //
 //        //flatmap的下一级节点很有可能未完全初始化完毕，未初始化完时，后续链路都不能保证每台机器都有代码，要local
 //        if(!isAllInited(getIDName(),initInnerFlow.getIDName())){
 //            contextStack.setLocal();
-//            getStoreage().putContext(contextStack.getId(),contextStack);
+//            getStorage().putContext(contextStack.getId(),contextStack);
 //        }
 //        //设置内部流的parentFlowStep,以便检查是不是当前应该处理的节点检查通过。
 //        // null也让过先注释掉
@@ -146,17 +146,17 @@
 //            String startId = context.getId();
 //            //设置当前进度为multicall， trigger后持久化了但是context没变需要重新读取
 //            multiCall.call(startId);
-//            context = getStoreage().getContext(startId);
+//            context = getStorage().getContext(startId);
 //            String[] childTaskIds = new String[triggers.length];
 //            for(int i = 0; i < triggers.length; i++){
 //                childTaskIds[i] = startId+"_"+ context.getStack().size() +"-"+i;
 //            }
 //            //取全新的
-//            ContextStack innerContext = getStoreage().getContext(startId);
+//            ContextStack innerContext = getStorage().getContext(startId);
 //
 //            context.setChildTask(childTaskIds);
 //            //save
-//            getStoreage().putContext(startId,context);
+//            getStorage().putContext(startId,context);
 //
 //
 //            for (int i = 0; i < triggers.length; i++) {
@@ -165,7 +165,7 @@
 //                innerContext.setId(childTaskIds[i]);
 //                //build new childstack
 //                innerContext.setStatus(STATUS_SUB);
-//                getStoreage().putContext(innerContext.getId(),innerContext);
+//                getStorage().putContext(innerContext.getId(),innerContext);
 //
 //                //设置当前进度为下一个流的入口，trigger后持久化了但是context没变需要重新读取
 //                DFlow initInnerFlow = flows[i];
@@ -179,7 +179,7 @@
 //            }
 //
 //            for(int i =0; i < triggers.length; i++){
-//                ContextStack innerContext2 = getStoreage().getContext(childTaskIds[i]);
+//                ContextStack innerContext2 = getStorage().getContext(childTaskIds[i]);
 //
 //                if(triggers[i] != null) {
 //                    triggers[i].accept(innerContext2);
@@ -228,7 +228,7 @@
 //            if(n.getChildTask() != null){
 //                String[] childids = n.getChildTask();
 //                for(int j = 0;j<childids.length;j++){
-//                    globalsToMerge.add(getStoreage().getContext(childids[j]).getGlobal());
+//                    globalsToMerge.add(getStorage().getContext(childids[j]).getGlobal());
 //                }
 //                break;
 //            }

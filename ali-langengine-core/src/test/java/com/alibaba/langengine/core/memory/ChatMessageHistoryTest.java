@@ -25,7 +25,7 @@ public class ChatMessageHistoryTest {
         // success
         ChatMessageHistory history = new ChatMessageHistory();
         history.addUserMessage("hi!");
-        history.addAIMessage("whats up?");
+        history.addAIMessage("what's up?");
         System.out.println(JSON.toJSONString(history.getMessages()));
     }
 }

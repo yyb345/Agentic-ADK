@@ -35,7 +35,7 @@ public class WritePRD extends Action {
             "## Search Information\n" +
             "{search_information}\n" +
             "\n" +
-            "## mermaid quadrantChart code syntax example. DONT USE QUOTO IN CODE DUE TO INVALID SYNTAX. Replace the <Campain X> with REAL COMPETITOR NAME\n" +
+            "## mermaid quadrantChart code syntax example. DONT USE QUOTO IN CODE DUE TO INVALID SYNTAX. Replace the <Campaign X> with REAL COMPETITOR NAME\n" +
             "```mermaid\n" +
             "quadrantChart\n" +
             "    title Reach and engagement of campaigns\n" +
@@ -87,7 +87,7 @@ public class WritePRD extends Action {
             "## Search Information\n" +
             "{search_information}\n" +
             "\n" +
-            "## mermaid quadrantChart code syntax example. DONT USE QUOTO IN CODE DUE TO INVALID SYNTAX. Replace the <Campain X> with REAL COMPETITOR NAME\n" +
+            "## mermaid quadrantChart code syntax example. DONT USE QUOTO IN CODE DUE TO INVALID SYNTAX. Replace the <Campaign X> with REAL COMPETITOR NAME\n" +
             "```mermaid\n" +
             "quadrantChart\n" +
             "    title Reach and engagement of campaigns\n" +

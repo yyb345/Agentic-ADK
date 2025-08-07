@@ -141,7 +141,7 @@ public class DefaultMcpSession implements McpSession {
 				logger.info("Received Response: {}", response);
 				MonoSink<JSONRPCResponse> sink = pendingResponses.remove(response.getId());
 				if (sink == null) {
-					logger.warn("Unexpected response for unkown id {}", response.getId());
+					logger.warn("Unexpected response for unknown id {}", response.getId());
 				}
 				else {
 					sink.success(response);
