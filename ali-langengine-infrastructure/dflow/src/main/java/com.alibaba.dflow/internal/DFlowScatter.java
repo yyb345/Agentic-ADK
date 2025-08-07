@@ -35,15 +35,15 @@
 //
 //    private static final String DFLOWSCATTERERROR = "_DFLOW_SCATTER_ERROR";
 //
-//    private boolean parrallel = true;
+//    private boolean parallel = true;
 //    private String collectCallType;
 //
-//    public DFlowScatter(String identifier,DFlow<T> source, BiFunction<ContextStack, ? super T, List<DFlow<String>>> innerMapper,  Function3<ContextStack, R, ? extends P> reducer,Type clazz,String id,boolean internalNode,boolean parrallel)
+//    public DFlowScatter(String identifier,DFlow<T> source, BiFunction<ContextStack, ? super T, List<DFlow<String>>> innerMapper,  Function3<ContextStack, R, ? extends P> reducer,Type clazz,String id,boolean internalNode,boolean parallel)
 //        throws DFlowConstructionException {
 //        super(identifier,source,clazz,internalNode);
 //        this.mapper = new ClosureEnabledFunction2<P, List<DFlow<String>>>(innerMapper,this,"");
 //        this.reducer = reducer;
-//        this.parrallel = parrallel;
+//        this.parallel = parallel;
 //        this.id(id);
 //    }
 //
@@ -55,8 +55,8 @@
 //            ContextNode node = contextStack.getStack().peek();
 //
 //            //set child info
-//            if(parrallel){
-//                node.setParrarel();
+//            if(parallel){
+//                node.setParallel();
 //            }
 //            node.setChildTotalSize(lastInnerFlows.size());
 //            if(lastInnerFlows.size() <= 3) {
@@ -73,7 +73,7 @@
 //                node.setChildTask(childIds);
 //            }
 //
-//            if(parrallel) {
+//            if(parallel) {
 //                for (DFlow<? extends R> p : lastInnerFlows) {
 //                    callInnerFlow(contextStack, p);
 //                }
@@ -210,7 +210,7 @@
 //    }
 //
 //    /**
-//     * Call callbcak
+//     * Call callback
 //     * @param s
 //     * @param s2
 //     * @return

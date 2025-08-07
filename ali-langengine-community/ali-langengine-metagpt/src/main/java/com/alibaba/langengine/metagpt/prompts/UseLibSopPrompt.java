@@ -73,7 +73,7 @@ public class UseLibSopPrompt {
             "5. You must describe your thoughts on the plan in natural language at the beginning. After that, you should write all the actions together. The response should follow the format:\n" +
             "{\n" +
             "\"explanation\": \"explain why the last action failed, set to null for the first planning\",\n" +
-            "\"thoughts\": \"Your thoughts on the plan in natural languag\",\n" +
+            "\"thoughts\": \"Your thoughts on the plan in natural language\",\n" +
             "\"action_list\": [\n" +
             "{\"name\": \"action name\", \"args\": {\"arg name\": value}, \"expectation\": \"describe the expected results of this action\"},\n" +
             "{\"name\": \"action name\", \"args\": {\"arg name\": value}, \"expectation\": \"describe the expected results of this action\"},\n" +

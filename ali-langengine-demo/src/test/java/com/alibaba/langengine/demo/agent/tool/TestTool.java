@@ -30,7 +30,7 @@ public class TestTool extends StructuredTool {
     }
 
     public ToolExecuteResult execute(String toolInput) {
-        return new ToolExecuteResult("huyu sucess"+toolInput, true);
+        return new ToolExecuteResult("huyu success"+toolInput, true);
 
     }
 }

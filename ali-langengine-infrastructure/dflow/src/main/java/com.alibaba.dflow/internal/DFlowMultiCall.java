@@ -46,8 +46,8 @@ public class DFlowMultiCall extends DFlow<InnerList> implements Function3<Intege
 
     private ClosureEnabledConsumer onInit;
 
-    DFlowMultiCall(String identifer,String[] callTypes) throws DFlowConstructionException {
-        this(identifer, callTypes,null);
+    DFlowMultiCall(String identifier,String[] callTypes) throws DFlowConstructionException {
+        this(identifier, callTypes,null);
     }
 
     public DFlowMultiCall(String[] callTypes) throws DFlowConstructionException {
