@@ -23,6 +23,7 @@ Agentic ADK 是阿里国际AI Business推出基于 [Google-ADK](https://google.g
   * **卓越的逻辑推理**：结合指令微调与偏好学习，模型的思维链（Chain-of-Thought, CoT）推理能力得到显著增强，能够更好地理解和执行复杂指令。
   * **精准的跨语言理解与识别**：不仅限于中英文，模型提升了在多语言环境下的文字识别（OCR）能力，并优化了从表格、图表等复杂视觉元素中进行结构化数据提取的精度。
 * 灵活的**多智能体框架**，支持同步、异步、流式、并行等多种执行模式，天然集成A2A协议。
+* **高性能的工作流引擎与Agent相结合**，构建于在阿里巴巴SmartEngine工作流引擎之上，利用 RxJava3 实现响应式编程模式，采用基于节点的流程系统来定义智能体行为，支持同步、异步和双向通信模式，为构建复杂的AI应用提供了灵活的基础。
 * 提供**上百个API工具**，并推出MCP集成网关。
 * **DeepResearch/RAG、ComputerUse、BrowserUse、Sandbox**等Agentic AI最佳实践。
 * 智能体会话的上下文扩展实现，包括Session、Memory、Artifact等等，内置长短记忆插件。

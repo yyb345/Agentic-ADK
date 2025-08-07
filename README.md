@@ -26,6 +26,7 @@ Agentic ADK is an Agent application development framework launched by Alibaba In
     * **Outstanding Logical Reasoning**: By combining instruction fine-tuning and preference learning, the model's Chain-of-Thought (CoT) reasoning abilities are significantly enhanced, enabling it to better understand and execute complex instructions.
     * **Precise Cross-Language Understanding and Recognition**: Beyond just Chinese and English, the model has improved text recognition (OCR) capabilities in multilingual environments and optimized the accuracy of structured data extraction from complex visual elements such as tables and charts.
 * Flexible **multi-agent framework**, supporting various execution modes such as synchronous, asynchronous, streaming, and parallel, and naturally integrating the A2A protocol.
+* **A high-performance workflow engine combined with agents**, built on top of Alibaba's SmartEngine workflow engine, utilizes RxJava3 to implement a reactive programming model. It employs a node-based process system to define agent behaviors, supporting synchronous, asynchronous, and bidirectional communication modes, providing a flexible foundation for building complex AI applications.
 * Offers hundreds of API tools and introduces the MCP integration gateway.
 * **DeepResearch/RAG, ComputerUse, BrowserUse, Sandbox**, and other best practices for Agentic AI.
 * Implementation of context extension for agent conversations, including Session, Memory, Artifact, and more, with built-in short and long-term memory plugins.
