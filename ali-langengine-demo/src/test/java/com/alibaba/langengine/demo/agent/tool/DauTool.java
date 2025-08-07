@@ -39,9 +39,9 @@ public class DauTool extends StructuredTool {
     public ToolExecuteResult execute(String toolInput) {
         JSONObject input_dic = JSON.parseObject(toolInput);
         String input = (String) input_dic.getOrDefault("id","54321");
-        String result = "huyu sucess DauTool" + input ;
+        String result = "huyu success DauTool" + input ;
         log.debug("huyu tools debug result is", result);
-        return new ToolExecuteResult("huyu sucess DauTool"+toolInput, true);
+        return new ToolExecuteResult("huyu success DauTool"+toolInput, true);
 
     }
 }

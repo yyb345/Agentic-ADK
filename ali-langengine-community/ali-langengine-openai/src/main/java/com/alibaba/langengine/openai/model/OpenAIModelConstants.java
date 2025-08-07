@@ -44,7 +44,7 @@ public class OpenAIModelConstants {
 
     /**
      * GPT-4 Turbo with visionNew
-     * Ability to understand images, in addition to all other GPT-4 Turbo capabilties.
+     * Ability to understand images, in addition to all other GPT-4 Turbo capabilities.
      * Returns a maximum of 4,096 output tokens. This is a preview model version and
      * not suited yet for production traffic.
      */

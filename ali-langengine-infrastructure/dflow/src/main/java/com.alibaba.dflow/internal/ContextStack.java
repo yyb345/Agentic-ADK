@@ -263,7 +263,7 @@ public class ContextStack{
         public static final String COSTTIME = "COSTTIME";//dynamic
         public static final String CURRENT_INDEX = "SCATTER_CURRENT";
         public static final String TOTAL_SIZE = "SCATTER_TOTAL_CHILDSIZE";
-        public static final String PARRAREL = "SCATTER_IS_PARRALLEL";
+        public static final String PARALLEL = "SCATTER_IS_PARALLEL";
 
         public Integer getCurrentIndex(){
             return (Integer)get(CURRENT_INDEX);
@@ -281,13 +281,13 @@ public class ContextStack{
             put(TOTAL_SIZE,size);
         }
 
-        public boolean isParrallel(){
-            Boolean r = (Boolean)get(PARRAREL);
+        public boolean isParallel(){
+            Boolean r = (Boolean)get(PARALLEL);
             return r == null ? false: r;
         }
 
-        public void setParrarel(){
-            put(PARRAREL,true);
+        public void setParallel(){
+            put(PARALLEL,true);
         }
 
 

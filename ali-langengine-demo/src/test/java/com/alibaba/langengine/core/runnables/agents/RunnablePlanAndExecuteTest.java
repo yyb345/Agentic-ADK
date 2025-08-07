@@ -181,7 +181,7 @@ public class RunnablePlanAndExecuteTest extends BaseTest {
                 RunnableAgentExecutor agentExecutor = new RunnableAgentExecutor(agent, tools);
 
                 runnableOutput = agentExecutor.invoke(newInputs);
-                System.out.println("executeChain reponse:" + JSON.toJSONString(runnableOutput));
+                System.out.println("executeChain response:" + JSON.toJSONString(runnableOutput));
                 StepResponse stepResponse = new StepResponse();
                 stepResponse.setResponse(((RunnableHashMap)runnableOutput).get("output").toString());
                 stepContainer.addStep(step, stepResponse);

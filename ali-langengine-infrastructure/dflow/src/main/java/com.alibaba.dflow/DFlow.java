@@ -752,7 +752,7 @@ public abstract class DFlow<T> implements ValidClosure {
                     }
                     callReceived(message.getPayload().toString());
                 } catch (PipeLineNotInitedOnMachineException e) {
-                    logger.error("Received uncomplete flowstep,{}", JSON.toJSONString(message));
+                    logger.error("Received incomplete flowstep,{}", JSON.toJSONString(message));
                     throw e;
                 } catch (RetryException e) {
                     logger.info("Failed once, retrying,{}", JSON.toJSONString(message));
@@ -1201,7 +1201,7 @@ public abstract class DFlow<T> implements ValidClosure {
                 //转发也没有，可能目标ip的机器已经下线，如果要求local，去除local再拯救一下
                 contextStack.removeLocal();
                 DFlow.getStorage().putContext(m.getTraceId(), contextStack);
-                throw new RetryException("transfer local back failed,remove local&retry@" + m.getTraceId());
+                throw new RetryException("transfer local back failed, remove local&retry@" + m.getTraceId());
             }
         }
 
@@ -1213,7 +1213,7 @@ public abstract class DFlow<T> implements ValidClosure {
                 }
                 throw new PipeLineNotInitedOnMachineException();
             } else {
-                logger.error("Local no step "+ m.getName() +", tranfer to " + ips.get(0) + "@" + m.getTraceId());
+                logger.error("Local no step "+ m.getName() +", transfer to " + ips.get(0) + "@" + m.getTraceId());
                 if (!InitEntry.transferDflowInnerCall(m, ips.get(0))) {
                     throw new RetryException("transfer call failed@" + m.getTraceId());
                 }
@@ -1364,9 +1364,9 @@ public abstract class DFlow<T> implements ValidClosure {
                 InternalHelper.rebuildNewStack(contextStack, getIDName(), debugName);
                 onReturn(contextStack, errorData);
             } catch (TerminalException e) {
-                logger.info("Terminaled:" + contextStack.getId() + "@" + contextStack.getStack().peek().getName());
+                logger.info("Terminated:" + contextStack.getId() + "@" + contextStack.getStack().peek().getName());
             } catch (Exception e) {
-                logger.error("Error happend in errorhandler:" + getIDName(), e);
+                logger.error("Error happened in errorHandler:" + getIDName(), e);
                 triggerNext(nextStepId, contextStack.getId());
             }
         } else {

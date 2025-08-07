@@ -26,7 +26,7 @@ public class CloneFunction extends Action {
             "Please convert the function code ```{source_code}``` into the the function format: ```{template_func}```.\n" +
             "*Please Write code based on the following list and context*\n" +
             "1. Write code start with ```, and end with ```.\n" +
-            "2. Please implement it in one function if possible, except for import statements. for exmaple:\n" +
+            "2. Please implement it in one function if possible, except for import statements. for example:\n" +
             "```python\n" +
             "import pandas as pd\n" +
             "def run(*args) -> pd.DataFrame:\n" +

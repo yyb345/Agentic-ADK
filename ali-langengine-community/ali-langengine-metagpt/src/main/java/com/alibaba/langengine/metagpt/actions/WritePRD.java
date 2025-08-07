@@ -110,7 +110,7 @@ public class WritePRD extends Action {
             "{format_example}\n" +
             "-----\n" +
             "Role: You are a professional product manager; the goal is to design a concise, usable, efficient product\n" +
-            "Requirements: According to the context, fill in the following missing information, note that each sections are returned in Python code triple quote form seperatedly. If the requirements are unclear, ensure minimum viability and avoid excessive design\n" +
+            "Requirements: According to the context, fill in the following missing information, note that each sections are returned in Python code triple quote form separately. If the requirements are unclear, ensure minimum viability and avoid excessive design\n" +
             "ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. AND '## <SECTION_NAME>' SHOULD WRITE BEFORE the code and triple quote. Output carefully referenced \"Format example\" in format.\n" +
             "\n" +
             "## Original Requirements: Provide as Plain text, place the polished complete original requirements here\n" +

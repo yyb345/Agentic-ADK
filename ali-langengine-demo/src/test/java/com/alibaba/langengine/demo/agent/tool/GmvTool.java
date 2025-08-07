@@ -40,7 +40,7 @@ public class GmvTool extends StructuredTool {
     public ToolExecuteResult execute(String toolInput) {
         JSONObject input_dic = JSON.parseObject(toolInput);
         String input = (String) input_dic.getOrDefault("id","54321");
-        String result = "huyu sucess GmvTool" + input ;
+        String result = "huyu success GmvTool" + input ;
         log.debug("huyu tools debug result is", result);
         return new ToolExecuteResult(result, true);
 
