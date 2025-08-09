@@ -20,6 +20,8 @@ Agentic ADK is an Agent application development framework launched by Alibaba In
 
 Agentic ADK is an Agent application development framework launched by Alibaba International AI Business, based on [Google-ADK](https://google.github.io/adk-docs/) and Ali-LangEngine. It is used for developing, constructing, evaluating, and deploying powerful, flexible, and controllable complex AI Agents. ADK aims to make Agent development simpler and more user-friendly, enabling developers to more easily build, deploy, and orchestrate various Agent applications ranging from simple tasks to complex collaborations.
 
+[![观看视频](https://img.alicdn.com/imgextra/i2/6000000004611/O1CN01ECWZaj1jvtLCiWNhG_!!6000000004611-0-tbvideo.jpg)](https://cloud.video.taobao.com/vod/DJzgj7IzixIwu186f2Uxmv4GnRtNqhn-U9fTTNmr3zo.mp4)
+
 **Important features**
 * Based on the Google ADK interface, it strengthens core execution pathways such as streaming interaction and visualization debugging tools, enabling developers to efficiently develop Agent applications.
 * **Seamlessly integrates with Alibaba's International Multimodal Large Language Model, Ovis**, to achieve deep alignment and fusion of visual and textual information. This model is characterized by high performance and lightweight design, offering the following advantages for efficient development and deployment of multimodal Agents:
