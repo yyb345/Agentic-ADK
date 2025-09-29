@@ -3,12 +3,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.taobao</groupId>
-		<artifactId>parent</artifactId>
-		<version>2.0.0</version>
-		<relativePath/>
-	</parent>
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>ali-agentic-adk</artifactId>
@@ -55,22 +49,19 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jacoco-plugin.version>0.8.8</jacoco-plugin.version>
 		<maven-antrun.version>1.8</maven-antrun.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-		<spring-boot.version>2.5.12</spring-boot.version>
-		<springframework.version>5.3.31</springframework.version>
+		<spring-boot.version>3.4.1</spring-boot.version>
+		<springframework.version>6.2.1</springframework.version>
 		<junit5.version>5.11.0</junit5.version>
 		<!-- overridden by submodule that need skip deploy -->
 		<maven.deploy.skip>false</maven.deploy.skip>
 		<root.basedir>${project.basedir}</root.basedir>
 		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
 		<flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
-		<ali-agentic-adk.version>0.1.0</ali-agentic-adk.version>
+		<ali-agentic-adk.version>1.2.6-202508111516</ali-agentic-adk.version>
 	</properties>
 
 	<modules>
@@ -218,9 +209,15 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-websocket</artifactId>
-				<version>2.5.12</version>
 			</dependency>
 			<!-- websocket end -->
+			
+			<!-- security start -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-security</artifactId>
+			</dependency>
+			<!-- security end -->
 
 			<!-- chatopenai stream防止冲突问题解决 start -->
 			<!-- core used -->
@@ -310,7 +307,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<version>3.3.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

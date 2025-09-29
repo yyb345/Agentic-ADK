@@ -56,18 +56,6 @@
 
             <dependency>
                 <groupId>com.aliyun</groupId>
-                <artifactId>ecd20201002</artifactId>
-                <version>2.2.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.aliyun</groupId>
-                <artifactId>ecd20200930</artifactId>
-                <version>4.2.8</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.aliyun</groupId>
                 <artifactId>appstream_center20210218</artifactId>
                 <version>1.0.4</version>
             </dependency>
@@ -81,7 +69,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-security</artifactId>
-                <version>3.4.1</version>
+                <version>${spring-boot.version}</version>
             </dependency>
 
             <dependency>
@@ -202,14 +190,6 @@
                 </executions>
                 <configuration>
                     <attach>true</attach>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>

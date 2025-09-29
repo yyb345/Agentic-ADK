@@ -20,7 +20,7 @@ import com.alibaba.agentic.core.tools.BaseTool;
 import com.alibaba.agentic.core.tools.DashScopeTools;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.langengine.jsonrepair.JsonSafeParser;
+// import com.alibaba.langengine.jsonrepair.JsonSafeParser; // Commented out due to unavailable dependency
 import groovy.lang.Tuple2;
 import io.reactivex.rxjava3.core.Flowable;
 import org.apache.commons.collections.CollectionUtils;
@@ -298,7 +298,7 @@ public class DeepSearchAgentTest {
         Tuple2<Action, String> parseLlmResult(String text) {
             if (text.contains("<action-search>")) {
                 text = text.replace("<action-search>","").replace("</action-search>", "");
-                return Tuple2.tuple(Action.search, JsonSafeParser.parseObject(text).getString("query"));
+                return Tuple2.tuple(Action.search, JSON.parseObject(text).getString("query"));
             }
             if (text.contains("<action-reflect>")) {
                 return Tuple2.tuple(Action.think, text);
@@ -515,7 +515,7 @@ public class DeepSearchAgentTest {
             llmRequest.setExtraParams(Map.of("enable_thinking", false));
             llmRequest.setMessages(List.of(new LlmRequest.Message("system", prompt), new LlmRequest.Message("user", userQuery)));
             return super.invoke(llmRequest, systemContext).doOnNext(llmResponse -> {
-                Map<String, Object> paramMap =  JsonSafeParser.parseObject(llmResponse.getChoices().get(0).getText());
+                Map<String, Object> paramMap =  JSON.parseObject(llmResponse.getChoices().get(0).getText(), Map.class);
                 if (!Boolean.TRUE.equals(paramMap.get("pass"))) {
                     badRequests.put(result.get(ResultKey.query.name()), paramMap.get("think"));
                 }
